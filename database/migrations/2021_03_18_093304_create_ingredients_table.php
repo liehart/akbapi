@@ -17,7 +17,7 @@ class CreateIngredientsTable extends Migration
             $table->bigIncrements('id');
             $table->string('unit');
             $table->integer('serving_size');
-            $table->integer('remaining_stock');
+            $table->integer('remaining_stock')->default(0);
             $table->bigInteger('menu_id')->unsigned();
             $table->foreign('menu_id')
                 ->references('id')

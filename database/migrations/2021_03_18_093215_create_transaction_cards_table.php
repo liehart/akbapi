@@ -16,7 +16,7 @@ class CreateTransactionCardsTable extends Migration
         Schema::create('transaction_cards', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('cardholder_name')->nullable();
-            $table->string('cardholder_number');
+            $table->string('cardholder_number')->unique();
             $table->integer('cardholder_exp_month');
             $table->integer('cardholder_exp_year');
             $table->enum('card_type', ['debit', 'credit']);

@@ -15,11 +15,18 @@ class CreateReservationsTable extends Migration
     {
         Schema::create('reservations', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->date('reservation_date');
+            $table->enum('reservation_session', ['lunch', 'dinner', 'other']);
             $table->bigInteger('table_table_number')->unsigned();
             $table->foreign('table_table_number')
                 ->references('table_number')
                 ->on('tables')
                 ->onDelete('RESTRICT');
+            $table->bigInteger('customer_id')->unsigned();
+            $table->foreign('customer_id')
+                ->references('id')
+                ->on('customers')
+                ->onDelete('CASCADE');
             $table->softDeletes();
             $table->timestamps();
         });

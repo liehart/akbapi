@@ -37,7 +37,7 @@ class CustomerController extends BaseController
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:100',
             'email' => 'nullable|email:rfc,dns',
-            'phone' => 'nullable|digits_between:10,15'
+            'phone' => 'nullable|digits_between:10,13'
         ]);
 
         if ($validator->fails()) {
@@ -81,7 +81,9 @@ class CustomerController extends BaseController
 
         $requestData = $request->all();
         $validator = Validator::make($request->all(), [
-            'name' => 'required|max:100'
+            'name' => 'required|max:100',
+            'email' => 'nullable|email:rfc,dns',
+            'phone' => 'nullable|digits_between:10,15'
         ]);
 
         if ($validator->fails()) {
@@ -95,6 +97,8 @@ class CustomerController extends BaseController
         if (isset($requestData['phone'])) {
             $customer->phone = $requestData['phone'];
         }
+
+        $customer->save();
 
         return $this->sendResponse($customer, 'Customer update success', 200);
     }
@@ -112,7 +116,7 @@ class CustomerController extends BaseController
         if (is_null($customer))
             return $this->sendError('Customer not found');
 
-        $customer->user->delete();
+        $customer->delete();
 
         return $this->sendResponse(null, 'Customer deleted successfully.');
     }
