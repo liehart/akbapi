@@ -4,8 +4,20 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class StockHistory extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
+
+    protected $fillable = [
+        'quantity',
+        'price',
+        'category',
+        'ingredient_id',
+    ];
+
+    protected $hidden = [
+        'deleted_at',
+    ];
 }

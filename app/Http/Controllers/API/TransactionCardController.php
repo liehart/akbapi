@@ -37,7 +37,7 @@ class TransactionCardController extends BaseController
         $validator = Validator::make($request->all(), [
             'card_type' => 'required|in:debit,credit',
             'cardholder_name' => 'required_if:card_type,credit|max:100',
-            'cardholder_number' => 'required|digits_between:15,16|unique:transaction_cards',
+            'cardholder_number' => 'required|digits_between:13,16|unique:transaction_cards',
             'cardholder_exp_month' => 'required|between:1,12',
             'cardholder_exp_year' => 'required|digits:4',
             'cardholder_ccv' => 'required|digits_between:3,4'

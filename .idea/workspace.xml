@@ -2,13 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d7a1a0b2-4b38-4a98-9531-4615cb76fabb" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/akbapi.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/akbapi.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/API/StockHistoryController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/API/StockHistoryController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/API/TransactionCardController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/API/TransactionCardController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Models/TransactionCard.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/TransactionCard.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Models/StockHistory.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/StockHistory.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/api.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/api.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -186,7 +184,7 @@
       <workItem from="1616059221583" duration="11087000" />
       <workItem from="1616120325295" duration="4060000" />
       <workItem from="1616125209866" duration="620000" />
-      <workItem from="1616128298307" duration="8338000" />
+      <workItem from="1616128298307" duration="9453000" />
     </task>
     <servers />
   </component>

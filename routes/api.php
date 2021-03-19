@@ -7,6 +7,7 @@ use App\Http\Controllers\API\EmployeeRoleController;
 use App\Http\Controllers\API\IngredientController;
 use App\Http\Controllers\API\MenuController;
 use App\Http\Controllers\API\ReservationController;
+use App\Http\Controllers\API\StockHistoryController;
 use App\Http\Controllers\API\TableController;
 use App\Http\Controllers\API\TransactionCardController;
 use Illuminate\Support\Facades\Route;
@@ -30,6 +31,7 @@ Route::resource('ingredient', IngredientController::class);
 Route::resource('reservation', ReservationController::class);
 Route::resource('role', EmployeeRoleController::class);
 Route::resource('employee', EmployeeController::class);
+Route::resource('history', StockHistoryController::class);
 
 Route::prefix('auth')->group(function () {
     Route::post('/', [AuthController::class, 'index'])->middleware('auth:api');
