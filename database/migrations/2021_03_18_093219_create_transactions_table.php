@@ -32,6 +32,11 @@ class CreateTransactionsTable extends Migration
                 ->references('id')
                 ->on('transaction_cards')
                 ->onDelete('RESTRICT');
+            $table->bigInteger('cashier_id')->unsigned();
+            $table->foreign('cashier_id')
+                ->references('id')
+                ->on('employees')
+                ->onDelete('RESTRICT');
             $table->softDeletes();
             $table->timestamps();
         });

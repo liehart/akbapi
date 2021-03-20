@@ -24,6 +24,11 @@ class CreateOrdersTable extends Migration
                 ->references('id')
                 ->on('reservations')
                 ->onDelete('RESTRICT');
+            $table->bigInteger('waiter_id')->unsigned();
+            $table->foreign('waiter_id')
+                ->references('id')
+                ->on('employees')
+                ->onDelete('RESTRICT');
             $table->softDeletes();
             $table->timestamps();
         });
