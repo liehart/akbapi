@@ -11,7 +11,9 @@ class Ingredient extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'unit', 'serving_size', 'menu_id'
+        'unit',
+        'serving_size',
+        'menu_id'
     ];
 
     protected $hidden = [

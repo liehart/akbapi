@@ -6,6 +6,8 @@ use App\Http\Controllers\API\EmployeeController;
 use App\Http\Controllers\API\EmployeeRoleController;
 use App\Http\Controllers\API\IngredientController;
 use App\Http\Controllers\API\MenuController;
+use App\Http\Controllers\API\OrderController;
+use App\Http\Controllers\API\OrderDetailController;
 use App\Http\Controllers\API\ReservationController;
 use App\Http\Controllers\API\StockHistoryController;
 use App\Http\Controllers\API\TableController;
@@ -32,6 +34,8 @@ Route::resource('reservation', ReservationController::class);
 Route::resource('role', EmployeeRoleController::class);
 Route::resource('employee', EmployeeController::class);
 Route::resource('history', StockHistoryController::class);
+Route::resource('order', OrderController::class);
+Route::resource('order/{order_id}/detail', OrderDetailController::class);
 
 Route::prefix('auth')->group(function () {
     Route::post('/', [AuthController::class, 'index'])->middleware('auth:api');

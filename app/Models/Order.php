@@ -13,6 +13,7 @@ class Order extends Model
     protected $fillable = [
         'reservation_id',
         'finish_at',
+        'waiter_id'
     ];
 
     protected $hidden = [

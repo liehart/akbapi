@@ -25,7 +25,7 @@ class AuthController extends BaseController
         $requestData = $request->all();
         $validator = Validator::make($request->all(), [
             'email' => 'required|email:rfc,dns',
-            'password' => 'required '
+            'password' => 'required'
         ]);
 
         if ($validator->fails()) {

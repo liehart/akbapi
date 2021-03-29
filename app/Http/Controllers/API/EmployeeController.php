@@ -42,7 +42,7 @@ class EmployeeController extends BaseController
             'date_join' => 'required|date',
             'gender' => 'required|in:male,female,other',
             'password' => 'required',
-            'employee_roles_id' => 'required|exists:employee_roles,id'
+            'role_id' => 'required|exists:employee_roles,id'
         ]);
 
         if ($validator->fails()) {
@@ -93,7 +93,7 @@ class EmployeeController extends BaseController
             'phone' => 'required|digits_between:10,15',
             'date_join' => 'required|date',
             'gender' => 'required|in:male,female,other',
-            'employee_roles_id' => 'required|exists:employee_roles,id',
+            'role_id' => 'required|exists:employee_roles,id',
             'is_disabled' => 'required|boolean'
         ]);
 
@@ -137,8 +137,8 @@ class EmployeeController extends BaseController
         if ($user) {
             $requestData = $request->all();
             $validator = Validator::make($request->all(), [
-                'oldPassword' => 'required',
-                'newPassword' => 'required|different:oldPassword'
+                'old_password' => 'required',
+                'new_password' => 'required|different:oldPassword'
             ]);
 
             if ($validator->fails()) {
@@ -147,9 +147,9 @@ class EmployeeController extends BaseController
 
             if (Auth::attempt([
                 'email' => $user->email,
-                'password' => $requestData['oldPassword']
+                'password' => $requestData['old_password']
             ])) {
-                $user->password = bcrypt($requestData['newPassword']);
+                $user->password = bcrypt($requestData['new_password']);
                 $user->save();
                 return $this->sendResponse(null, 'Employee updated successfully.');
             }

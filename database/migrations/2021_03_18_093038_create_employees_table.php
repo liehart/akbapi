@@ -23,8 +23,8 @@ class CreateEmployeesTable extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->rememberToken();
-            $table->bigInteger('employee_roles_id')->unsigned();
-            $table->foreign('employee_roles_id')
+            $table->bigInteger('role_id')->unsigned();
+            $table->foreign('role_id')
                 ->references('id')
                 ->on('employee_roles')
                 ->onDelete('RESTRICT');
