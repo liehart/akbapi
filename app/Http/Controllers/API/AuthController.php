@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\Employee;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -12,8 +13,9 @@ class AuthController extends BaseController
 {
     public function index(): JsonResponse
     {
-        $user = Auth::guard('api')->user();
-        if ($user) {
+        $userid = Auth::guard('api')->id();
+        if ($userid) {
+            $user = Employee::with('role')->find($userid);
             return $this->sendResponse($user, 'User retrieved');
         }
 
@@ -36,7 +38,7 @@ class AuthController extends BaseController
             'email' => $requestData['email'],
             'password' => $requestData['password']
         ])) {
-            $user = Auth::user();
+            $user = Employee::with('role')->find(Auth::id());
             $success['token'] = $user->createToken('melcafe')->accessToken;
             $success['user'] = $user;
             return $this->sendResponse($success, 'User login success');

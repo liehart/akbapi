@@ -18,7 +18,7 @@ class EmployeeController extends BaseController
      */
     public function index(): JsonResponse
     {
-        $employee = Employee::all();
+        $employee = Employee::with('role')->get();
 
         if (count($employee) > 0)
             return $this->sendResponse($employee, 'Employee retrieved successfully');
