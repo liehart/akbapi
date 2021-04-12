@@ -23,6 +23,7 @@ class CreateEmployeesTable extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->string('image_path')->nullable();
+            $table->boolean('locked')->default(false);
             $table->rememberToken();
             $table->bigInteger('role_id')->unsigned();
             $table->foreign('role_id')

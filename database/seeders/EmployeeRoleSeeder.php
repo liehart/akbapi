@@ -17,11 +17,13 @@ class EmployeeRoleSeeder extends Seeder
         $roles = [
             [
                 'name' => 'Owner',
+                'slug' => 'owner',
                 'locked' => true,
                 'created_at' => now(),
                 'updated_at' => now()
             ], [
                 'name' => 'Operational Manager',
+                'slug' => 'operational-manager',
                 'locked' => true,
                 'created_at' => now(),
                 'updated_at' => now()

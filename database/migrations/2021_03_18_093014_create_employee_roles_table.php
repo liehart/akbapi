@@ -16,6 +16,7 @@ class CreateEmployeeRolesTable extends Migration
         Schema::create('employee_roles', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
+            $table->string('slug')->unique();
             $table->boolean('locked')->default(false);
             $table->softDeletes();
             $table->timestamps();

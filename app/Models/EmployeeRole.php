@@ -11,7 +11,7 @@ class EmployeeRole extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'name'
+        'name', 'slug'
     ];
 
     protected $hidden = [

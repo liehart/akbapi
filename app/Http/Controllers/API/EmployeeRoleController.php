@@ -36,6 +36,7 @@ class EmployeeRoleController extends BaseController
         $requestData = $request->all();
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:100|unique:employee_roles',
+            'slug' => 'required|max:100|unique:employee_roles'
         ]);
 
         if ($validator->fails()) {
@@ -44,7 +45,7 @@ class EmployeeRoleController extends BaseController
 
         $role = EmployeeRole::create($requestData);
 
-        return $this->sendResponse($role, 'Role create success', 200);
+        return $this->sendResponse($role, 'Role create success');
     }
 
     /**
@@ -80,6 +81,7 @@ class EmployeeRoleController extends BaseController
         $requestData = $request->all();
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:100|unique:employee_roles,name,' . $role->id,
+            'slug' => 'required|max:100|unique:employee_roles,slug,' . $role->id,
         ]);
 
         if ($validator->fails()) {
@@ -87,9 +89,10 @@ class EmployeeRoleController extends BaseController
         }
 
         $role->name = $requestData['name'];
+        $role->slug = $requestData['slug'];
         $role->save();
 
-        return $this->sendResponse($role, 'Role update success', 200);
+        return $this->sendResponse($role, 'Role update success');
 
     }
 
