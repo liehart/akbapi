@@ -93,8 +93,7 @@ class EmployeeController extends BaseController
             'phone' => 'required|digits_between:10,15',
             'date_join' => 'required|date',
             'gender' => 'required|in:male,female,other',
-            'role_id' => 'required|exists:employee_roles,id',
-            'is_disabled' => 'required|boolean'
+            'role_id' => 'required|exists:employee_roles,id'
         ]);
 
         if ($validator->fails()) {
@@ -106,8 +105,7 @@ class EmployeeController extends BaseController
         $employee->phone = $requestData['phone'];
         $employee->date_join = $requestData['date_join'];
         $employee->gender = $requestData['gender'];
-        $employee->employee_roles_id = $requestData['employee_roles_id'];
-        $employee->is_disabled = $requestData['is_disabled'];
+        $employee->role_id = $requestData['role_id'];
         $employee->save();
 
         return $this->sendResponse($employee, 'Employee updated success', 200);

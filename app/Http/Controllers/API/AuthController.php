@@ -40,10 +40,22 @@ class AuthController extends BaseController
         ])) {
             $user = Employee::with('role')->find(Auth::id());
             $success['token'] = $user->createToken('melcafe')->accessToken;
-            $success['user'] = $user;
+            //$success['user'] = $user;
             return $this->sendResponse($success, 'User login success');
         }
 
+        return $this->sendError('Tidak dapat masuk, aslamat email atau password salah.', null, 401);
+    }
+
+    public function logout(): JsonResponse
+    {
+        $user = Auth::guard('api')->user();
+        if ($user) {
+            $user->token()->revoke();
+            return $this->sendResponse(null, 'Logout success');
+        }
+
         return $this->sendError('Unauthorised.', ['error'=>'Unauthorised']);
+
     }
 }
