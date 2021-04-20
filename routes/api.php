@@ -47,3 +47,6 @@ Route::prefix('auth')->group(function () {
 });
 
 Route::post('menu/image/{id}', [MenuController::class, 'updateImage']);
+Route::get('select/role', [EmployeeRoleController::class, 'select']);
+Route::post('employee/{id}/deactivate', [EmployeeController::class, 'deactivate']);
+Route::post('employee/{id}/activate', [EmployeeController::class, 'activate']);

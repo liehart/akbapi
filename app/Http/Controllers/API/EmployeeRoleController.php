@@ -25,6 +25,16 @@ class EmployeeRoleController extends BaseController
         return $this->sendError('Role empty');
     }
 
+    public function select(): JsonResponse
+    {
+        $role = EmployeeRole::all('name', 'id as value');
+
+        if (count($role) > 0)
+            return $this->sendResponse($role, 'Role retrieved successfully');
+
+        return $this->sendError('Role empty');
+    }
+
     /**
      * Store a newly created resource in storage.
      *

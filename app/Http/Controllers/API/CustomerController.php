@@ -17,12 +17,12 @@ class CustomerController extends BaseController
      */
     public function index(): JsonResponse
     {
-        $customer = Customer::all();
+        $customer = Customer::paginate(5)->onEachSide(2);
 
         if (count($customer) > 0)
             return $this->sendResponse($customer, 'Customers retrieved successfully');
 
-        return $this->sendError('Customers empty');
+        return $this->sendResponse($customer, 'Customers empty');
     }
 
     /**

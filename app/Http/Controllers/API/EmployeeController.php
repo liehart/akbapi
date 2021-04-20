@@ -18,7 +18,7 @@ class EmployeeController extends BaseController
      */
     public function index(): JsonResponse
     {
-        $employee = Employee::with('role')->get();
+        $employee = Employee::with('role')->paginate(5)->onEachSide(2);
 
         if (count($employee) > 0)
             return $this->sendResponse($employee, 'Employee retrieved successfully');
@@ -64,12 +64,38 @@ class EmployeeController extends BaseController
      */
     public function show(int $id): JsonResponse
     {
-        $employee = Employee::find($id);
+        $employee = Employee::with('role')->find($id);
 
         if (is_null($employee))
             return $this->sendError('Employee not found');
 
         return $this->sendResponse($employee, 'Employee retrieved successfully.');
+    }
+
+    public function deactivate(int $id): JsonResponse
+    {
+        $employee = Employee::with('role')->find($id);
+
+        if (is_null($employee))
+            return $this->sendError('Employee not found');
+
+        $employee->is_disabled = true;
+        $employee->save();
+
+        return $this->sendResponse($employee, 'Pegawai berhasil dinonaktifkan.');
+    }
+
+    public function activate(int $id): JsonResponse
+    {
+        $employee = Employee::with('role')->find($id);
+
+        if (is_null($employee))
+            return $this->sendError('Employee not found');
+
+        $employee->is_disabled = false;
+        $employee->save();
+
+        return $this->sendResponse($employee, 'Pegawai berhasil diaktifkan kembali.');
     }
 
     /**
