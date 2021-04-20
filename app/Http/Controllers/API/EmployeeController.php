@@ -18,7 +18,7 @@ class EmployeeController extends BaseController
      */
     public function index(): JsonResponse
     {
-        $employee = Employee::with('role')->paginate(5)->onEachSide(2);
+        $employee = Employee::with('role')->paginate(5)->onEachSide(2)->setPath(config('app.url'));
 
         if (count($employee) > 0)
             return $this->sendResponse($employee, 'Employee retrieved successfully');

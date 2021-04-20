@@ -17,7 +17,7 @@ class CustomerController extends BaseController
      */
     public function index(): JsonResponse
     {
-        $customer = Customer::paginate(5)->onEachSide(2);
+        $customer = Customer::paginate(5)->onEachSide(2)->setPath(config('app.url'));
 
         if (count($customer) > 0)
             return $this->sendResponse($customer, 'Customers retrieved successfully');
