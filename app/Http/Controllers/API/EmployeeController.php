@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\Customer;
 use App\Models\Employee;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -18,12 +19,27 @@ class EmployeeController extends BaseController
      */
     public function index(): JsonResponse
     {
-        $employee = Employee::with('role')->paginate(5)->onEachSide(2)->setPath(config('app.url'));
+        $employee = Employee::with('role')->paginate(5);
+        $employee->onEachSide(2);
+        $employee->setPath('');
 
         if (count($employee) > 0)
             return $this->sendResponse($employee, 'Employee retrieved successfully');
 
         return $this->sendError('Employee empty');
+    }
+
+    public function search(Request $request): JsonResponse
+    {
+        $query = $request->query('query');
+        $employees = Employee::with('role')->orderBy('name')->where('name', 'like', '%' . $query . '%')
+            ->orWhere('email', 'like', '%' . $query . '%')
+            ->orWhere('phone', 'like', '%' . $query . '%')
+            ->paginate(10);
+        $employees->onEachSide(2);
+        $employees->setPath('');
+
+        return $this->sendResponse($employees, 'OK');
     }
 
     /**
@@ -46,7 +62,7 @@ class EmployeeController extends BaseController
         ]);
 
         if ($validator->fails()) {
-            return $this->sendError('Validation error', $validator->errors());
+            return $this->sendError('V_ERR', $validator->errors());
         }
 
         $requestData['password'] = bcrypt($requestData['password']);
@@ -123,7 +139,7 @@ class EmployeeController extends BaseController
         ]);
 
         if ($validator->fails()) {
-            return $this->sendError('Validation error', $validator->errors());
+            return $this->sendError('V_ERR', $validator->errors());
         }
 
         $employee->name = $requestData['name'];
@@ -166,7 +182,7 @@ class EmployeeController extends BaseController
             ]);
 
             if ($validator->fails()) {
-                return $this->sendError('Validation error', $validator->errors());
+                return $this->sendError('V_ERR', $validator->errors());
             }
 
             if (Auth::attempt([

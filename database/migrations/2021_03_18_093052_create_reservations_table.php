@@ -17,8 +17,8 @@ class CreateReservationsTable extends Migration
             $table->bigIncrements('id');
             $table->date('reservation_date');
             $table->enum('reservation_session', ['lunch', 'dinner', 'other']);
-            $table->bigInteger('table_table_number')->unsigned();
-            $table->foreign('table_table_number')
+            $table->bigInteger('table_number')->unsigned();
+            $table->foreign('table_number')
                 ->references('table_number')
                 ->on('tables')
                 ->onDelete('RESTRICT');

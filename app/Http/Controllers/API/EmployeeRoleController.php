@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\Employee;
 use App\Models\EmployeeRole;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -17,12 +18,23 @@ class EmployeeRoleController extends BaseController
      */
     public function index(): JsonResponse
     {
-        $role = EmployeeRole::all();
+        $roles = EmployeeRole::paginate(10);
 
-        if (count($role) > 0)
-            return $this->sendResponse($role, 'Role retrieved successfully');
+        foreach($roles as $role)
+        {
+            $count = Employee::orderBy('name')->where('role_id', $role->id)->count();
+            $employee = Employee::where('role_id', $role->id)
+                ->select(['name', 'image_path'])
+                ->limit(5)
+                ->get();
+            $role->employees = $employee;
+            $role->count = $count - 5;
+        }
 
-        return $this->sendError('Role empty');
+        $roles->onEachSide(2);
+        $roles->setPath('');
+
+        return $this->sendResponse($roles, 'Role retrieved successfully');
     }
 
     public function select(): JsonResponse
@@ -33,6 +45,29 @@ class EmployeeRoleController extends BaseController
             return $this->sendResponse($role, 'Role retrieved successfully');
 
         return $this->sendError('Role empty');
+    }
+
+    public function search(Request $request): JsonResponse
+    {
+        $query = $request->query('query');
+        $roles = EmployeeRole::orderBy('name')->where('name', 'like', '%' . $query . '%')
+            ->paginate(10);
+
+        foreach($roles as $role)
+        {
+            $count = Employee::orderBy('name')->where('role_id', $role->id)->count();
+            $employee = Employee::where('role_id', $role->id)
+                ->select(['name', 'image_path'])
+                ->limit(5)
+                ->get();
+            $role->employees = $employee;
+            $role->count = $count - 5;
+        }
+
+        $roles->onEachSide(2);
+        $roles->setPath('');
+
+        return $this->sendResponse($roles, 'OK');
     }
 
     /**
@@ -50,7 +85,7 @@ class EmployeeRoleController extends BaseController
         ]);
 
         if ($validator->fails()) {
-            return $this->sendError('Validation error', $validator->errors());
+            return $this->sendError('V_ERR', $validator->errors());
         }
 
         $role = EmployeeRole::create($requestData);
@@ -95,7 +130,7 @@ class EmployeeRoleController extends BaseController
         ]);
 
         if ($validator->fails()) {
-            return $this->sendError('Validation error', $validator->errors());
+            return $this->sendError('V_ERR', $validator->errors());
         }
 
         $role->name = $requestData['name'];

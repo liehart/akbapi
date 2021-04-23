@@ -27,6 +27,24 @@ class EmployeeRoleSeeder extends Seeder
                 'locked' => true,
                 'created_at' => now(),
                 'updated_at' => now()
+            ], [
+                'name' => 'Waiter',
+                'slug' => 'waiter',
+                'locked' => true,
+                'created_at' => now(),
+                'updated_at' => now()
+            ], [
+                'name' => 'Chef',
+                'slug' => 'chef',
+                'locked' => true,
+                'created_at' => now(),
+                'updated_at' => now()
+            ], [
+                'name' => 'Cashier',
+                'slug' => 'Cashier',
+                'locked' => true,
+                'created_at' => now(),
+                'updated_at' => now()
             ]
         ];
         DB::table('employee_roles')->insert($roles);

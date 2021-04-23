@@ -18,12 +18,14 @@ class ReservationController extends BaseController
      */
     public function index(): JsonResponse
     {
-        $reservation = Reservation::all();
+        $reservation = Reservation::with('customer:id,name,deleted_at')->orderBy('reservation_date')->paginate(10);
+        $reservation->onEachSide(2);
+        $reservation->setPath('');
 
         if (count($reservation) > 0)
             return $this->sendResponse($reservation, 'Reservation retrieved successfully');
 
-        return $this->sendError('Reservation empty');
+        return $this->sendResponse($reservation,'Reservation empty');
     }
 
     /**

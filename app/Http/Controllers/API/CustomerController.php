@@ -17,12 +17,27 @@ class CustomerController extends BaseController
      */
     public function index(): JsonResponse
     {
-        $customer = Customer::paginate(5)->onEachSide(2)->setPath(config('app.url'));
+        $customer = Customer::orderBy('name')->paginate(10);
+        $customer->onEachSide(2);
+        $customer->setPath('');
 
         if (count($customer) > 0)
             return $this->sendResponse($customer, 'Customers retrieved successfully');
 
         return $this->sendResponse($customer, 'Customers empty');
+    }
+
+    public function search(Request $request): JsonResponse
+    {
+        $query = $request->query('query');
+        $customers = Customer::orderBy('name')->where('name', 'like', '%' . $query . '%')
+            ->orWhere('email', 'like', '%' . $query . '%')
+            ->orWhere('phone', 'like', '%' . $query . '%')
+            ->paginate(10);
+        $customers->onEachSide(2);
+        $customers->setPath('');
+
+        return $this->sendResponse($customers, 'OK');
     }
 
     /**
@@ -36,12 +51,12 @@ class CustomerController extends BaseController
         $requestData = $request->all();
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:100',
-            'email' => 'nullable|email:rfc,dns',
-            'phone' => 'nullable|digits_between:10,13'
+            'email' => 'nullable|email:rfc,dns|unique:customers',
+            'phone' => 'nullable|digits_between:10,13|unique:customers'
         ]);
 
         if ($validator->fails()) {
-            return $this->sendError('Validation error', $validator->errors());
+            return $this->sendError('V_ERR', $validator->errors());
         }
 
         $customer = Customer::create($requestData);
@@ -82,12 +97,12 @@ class CustomerController extends BaseController
         $requestData = $request->all();
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:100',
-            'email' => 'nullable|email:rfc,dns',
-            'phone' => 'nullable|digits_between:10,15'
+            'email' => 'nullable|email:rfc,dns|unique:customers,email,' . $customer->id,
+            'phone' => 'nullable|digits_between:10,15|unique:customers,phone,' . $customer->id,
         ]);
 
         if ($validator->fails()) {
-            return $this->sendError('Validation error', $validator->errors());
+            return $this->sendError('V_ERR', $validator->errors());
         }
 
         $customer->name = $requestData['name'];

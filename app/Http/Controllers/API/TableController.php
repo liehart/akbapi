@@ -17,12 +17,14 @@ class TableController extends BaseController
      */
     public function index(): JsonResponse
     {
-        $table = Table::all();
+        $table = Table::paginate(15);
+        $table->onEachSide(2);
+        $table->setPath('');
 
         if (count($table) > 0)
             return $this->sendResponse($table, 'Tables retrieved successfully');
 
-        return $this->sendError('Tables empty');
+        return $this->sendResponse($table, 'Tables empty');
     }
 
     /**
@@ -39,7 +41,7 @@ class TableController extends BaseController
         ]);
 
         if ($validator->fails()) {
-            return $this->sendError('Validation error', $validator->errors());
+            return $this->sendError('V_ERR', $validator->errors());
         }
 
         $table = Table::create($requestData);

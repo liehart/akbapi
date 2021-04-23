@@ -17,4 +17,12 @@ class EmployeeRole extends Model
     protected $hidden = [
         'deleted_at',
     ];
+
+    public function employee()
+    {
+        return $this
+            ->hasMany('App\Models\Employee', 'role_id', 'id')
+            ->select(['id', 'role_id', 'name', 'image_path'])
+            ->limit(2);
+    }
 }

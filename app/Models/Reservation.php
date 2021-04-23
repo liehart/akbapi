@@ -13,11 +13,15 @@ class Reservation extends Model
     protected $fillable = [
         'reservation_date',
         'reservation_session',
-        'table_table_number',
+        'table_number',
         'customer_id'
     ];
 
     protected $hidden = [
         'deleted_at',
     ];
+
+    public function customer() {
+        return $this->belongsTo('App\Models\Customer')->withTrashed();
+    }
 }

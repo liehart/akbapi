@@ -15,8 +15,4 @@ class Customer extends Model
         'email',
         'phone',
     ];
-
-    protected $hidden = [
-        'deleted_at',
-    ];
 }
