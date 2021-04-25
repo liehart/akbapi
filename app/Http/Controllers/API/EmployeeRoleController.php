@@ -18,7 +18,7 @@ class EmployeeRoleController extends BaseController
      */
     public function index(): JsonResponse
     {
-        $roles = EmployeeRole::paginate(10);
+        $roles = EmployeeRole::with('acls:role_id,object,operation')->paginate(10);
 
         foreach($roles as $role)
         {
@@ -50,7 +50,7 @@ class EmployeeRoleController extends BaseController
     public function search(Request $request): JsonResponse
     {
         $query = $request->query('query');
-        $roles = EmployeeRole::orderBy('name')->where('name', 'like', '%' . $query . '%')
+        $roles = EmployeeRole::with('acls')->orderBy('name')->where('name', 'like', '%' . $query . '%')
             ->paginate(10);
 
         foreach($roles as $role)
@@ -101,7 +101,7 @@ class EmployeeRoleController extends BaseController
      */
     public function show(int $id): JsonResponse
     {
-        $role = EmployeeRole::find($id);
+        $role = EmployeeRole::with('acls')->find($id);
 
         if (is_null($role))
             return $this->sendError('Role not found');

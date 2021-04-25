@@ -25,4 +25,8 @@ class EmployeeRole extends Model
             ->select(['id', 'role_id', 'name', 'image_path'])
             ->limit(2);
     }
+
+    public function acls() {
+        return $this->hasMany('App\Models\ACL', 'role_id', 'id');
+    }
 }

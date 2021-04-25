@@ -15,7 +15,7 @@ class AuthController extends BaseController
     {
         $userid = Auth::guard('api')->id();
         if ($userid) {
-            $user = Employee::with('role')->find($userid);
+            $user = Employee::with('role.acls:role_id,object,operation')->find($userid);
             return $this->sendResponse($user, 'User retrieved');
         }
 
@@ -38,13 +38,13 @@ class AuthController extends BaseController
             'email' => $requestData['email'],
             'password' => $requestData['password']
         ])) {
-            $user = Employee::with('role')->find(Auth::id());
+            $user = Employee::with('role.acls:role_id,object,operation')->find(Auth::id());
             $success['token'] = $user->createToken('melcafe')->accessToken;
             //$success['user'] = $user;
             return $this->sendResponse($success, 'User login success');
         }
 
-        return $this->sendError('Tidak dapat masuk, aslamat email atau password salah.', null, 401);
+        return $this->sendError('Tidak dapat masuk, alamat email atau password salah.', null, 401);
     }
 
     public function logout(): JsonResponse

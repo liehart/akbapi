@@ -16,7 +16,7 @@ class CreateACLSTable extends Migration
         Schema::create('a_c_l_s', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('object');
-            $table->string('operation');
+            $table->integer('operation');
             $table->bigInteger('role_id')->unsigned();
             $table->foreign('role_id')
                 ->references('id')
@@ -24,6 +24,7 @@ class CreateACLSTable extends Migration
                 ->onDelete('CASCADE');
             $table->softDeletes();
             $table->timestamps();
+            $table->unique(['object', 'role_id']);
         });
     }
 

@@ -177,7 +177,7 @@ class EmployeeController extends BaseController
         if ($user) {
             $requestData = $request->all();
             $validator = Validator::make($request->all(), [
-                'old_password' => 'required',
+                'password' => 'required',
                 'new_password' => 'required|different:oldPassword'
             ]);
 
@@ -187,13 +187,13 @@ class EmployeeController extends BaseController
 
             if (Auth::attempt([
                 'email' => $user->email,
-                'password' => $requestData['old_password']
+                'password' => $requestData['password']
             ])) {
                 $user->password = bcrypt($requestData['new_password']);
                 $user->save();
                 return $this->sendResponse(null, 'Employee updated successfully.');
             }
-            return $this->sendError('Old password not match');
+            return $this->sendError('OLD_WRONG');
         }
 
         return $this->sendError('Unauthorised');

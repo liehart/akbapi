@@ -27,6 +27,18 @@ class TableController extends BaseController
         return $this->sendResponse($table, 'Tables empty');
     }
 
+    public function search(Request $request): JsonResponse
+    {
+        $query = $request->query('query');
+        $tables = Table::orderBy('table_number')
+            ->where('table_number', 'like', '%' . $query . '%')
+            ->paginate(15);
+        $tables->onEachSide(2);
+        $tables->setPath('');
+
+        return $this->sendResponse($tables, 'OK');
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -106,6 +118,10 @@ class TableController extends BaseController
 
         if (is_null($table))
             return $this->sendError('Table not found');
+
+        if ($table->is_empty == true) {
+            return $this->sendError('IN_USE');
+        }
 
         $table->delete();
 

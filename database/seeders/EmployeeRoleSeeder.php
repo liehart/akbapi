@@ -34,14 +34,14 @@ class EmployeeRoleSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now()
             ], [
-                'name' => 'Chef',
-                'slug' => 'chef',
+                'name' => 'Cashier',
+                'slug' => 'cashier',
                 'locked' => true,
                 'created_at' => now(),
                 'updated_at' => now()
             ], [
-                'name' => 'Cashier',
-                'slug' => 'Cashier',
+                'name' => 'Chef',
+                'slug' => 'chef',
                 'locked' => true,
                 'created_at' => now(),
                 'updated_at' => now()

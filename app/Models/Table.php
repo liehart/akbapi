@@ -12,6 +12,10 @@ class Table extends Model
 
     protected $primaryKey = 'table_number';
 
+    protected $casts = [
+        'table_number' => 'string',
+    ];
+
     protected $fillable = [
         'table_number',
         'is_empty',

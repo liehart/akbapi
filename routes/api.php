@@ -59,3 +59,4 @@ Route::get('test', function () {
 Route::get('search/customer', [CustomerController::class, 'search']);
 Route::get('search/role', [EmployeeRoleController::class, 'search']);
 Route::get('search/employee', [EmployeeController::class, 'search']);
+Route::get('search/table', [TableController::class, 'search']);
