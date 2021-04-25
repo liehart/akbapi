@@ -71,7 +71,17 @@ class RoleController extends BaseController
         return $this->sendResponse($roles, 'OK');
     }
 
-    public function permission(int $id, Request $request): JsonResponse
+    public function permission(): JsonResponse
+    {
+        $role = Permission::all();
+
+        if (count($role) > 0)
+            return $this->sendResponse($role, 'Role retrieved successfully');
+
+        return $this->sendError('Role empty');
+    }
+
+    public function permission_old(int $id, Request $request): JsonResponse
     {
         $role = Role::find($id);
 
@@ -104,8 +114,9 @@ class RoleController extends BaseController
     {
         $requestData = $request->all();
         $validator = Validator::make($request->all(), [
-            'name' => 'required|max:100|unique:employee_roles',
-            'slug' => 'required|max:100|unique:employee_roles'
+            'name' => 'required|max:100|unique:roles',
+            'slug' => 'required|max:100|unique:roles',
+            'permission.*' => 'exists:permissions,id'
         ]);
 
         if ($validator->fails()) {
@@ -113,6 +124,10 @@ class RoleController extends BaseController
         }
 
         $role = Role::create($requestData);
+
+        foreach ($requestData['permission'] as $id) {
+            $role->permission()->syncWithoutDetaching($id);
+        }
 
         return $this->sendResponse($role, 'Role create success');
     }
@@ -149,12 +164,18 @@ class RoleController extends BaseController
 
         $requestData = $request->all();
         $validator = Validator::make($request->all(), [
-            'name' => 'required|max:100|unique:employee_roles,name,' . $role->id,
-            'slug' => 'required|max:100|unique:employee_roles,slug,' . $role->id,
+            'name' => 'required|max:100|unique:roles,name,' . $role->id,
+            'slug' => 'required|max:100|unique:roles,slug,' . $role->id,
+            'permission.*' => 'exists:permissions,id'
         ]);
 
         if ($validator->fails()) {
             return $this->sendError('V_ERR', $validator->errors());
+        }
+
+        $role->permission()->detach();
+        foreach ($requestData['permission'] as $id) {
+            $role->permission()->syncWithoutDetaching($id);
         }
 
         $role->name = $requestData['name'];

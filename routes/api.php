@@ -47,7 +47,6 @@ Route::prefix('auth')->group(function () {
 });
 
 Route::post('menu/image/{id}', [MenuController::class, 'updateImage']);
-Route::get('select/role', [RoleController::class, 'select']);
 Route::post('employee/{id}/deactivate', [EmployeeController::class, 'deactivate']);
 Route::post('employee/{id}/activate', [EmployeeController::class, 'activate']);
 
@@ -55,6 +54,9 @@ Route::get('test', function () {
     event(new App\Events\CustomerCreated('Someone'));
     return "Event has been sent!";
 });
+
+Route::get('select/role', [RoleController::class, 'select']);
+Route::get('select/permission', [RoleController::class, 'permission']);
 
 Route::get('search/customer', [CustomerController::class, 'search']);
 Route::get('search/role', [RoleController::class, 'search']);

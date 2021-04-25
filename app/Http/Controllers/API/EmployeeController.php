@@ -58,7 +58,7 @@ class EmployeeController extends BaseController
             'date_join' => 'required|date',
             'gender' => 'required|in:male,female,other',
             'password' => 'required',
-            'role_id' => 'required|exists:employee_roles,id'
+            'role_id' => 'required|exists:roles,id'
         ]);
 
         if ($validator->fails()) {
@@ -135,7 +135,7 @@ class EmployeeController extends BaseController
             'phone' => 'required|digits_between:10,15',
             'date_join' => 'required|date',
             'gender' => 'required|in:male,female,other',
-            'role_id' => 'required|exists:employee_roles,id'
+            'role_id' => 'required|exists:roles,id'
         ]);
 
         if ($validator->fails()) {

@@ -4,6 +4,9 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\Employee;
+use App\Models\Permission;
+use App\Models\Role;
+use Database\Seeders\RoleHasPermissionSeeder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,14 +18,14 @@ class AuthController extends BaseController
     {
         $userid = Auth::guard('api')->id();
         if ($userid) {
+            $user = Employee::with('role')->find($userid);
             $data = [];
-            $data['user'] = Employee::with('role')->find($userid);
-            $data['scope'] = array('customer.read', 'BEY');
+                        $data['user'] = $user;
+            $data['scope'] = $user->role->permission->pluck('name');
             return response()->json($data, 201);
-//            return $this->sendResponse($data, 'User retrieved');
         }
 
-        return $this->sendError('Unauthorised.', ['error'=>'Unauthorised']);
+        return $this->sendError('ERROR');
     }
 
     public function login(Request $request): JsonResponse
@@ -42,6 +45,9 @@ class AuthController extends BaseController
             'password' => $requestData['password']
         ])) {
             $user = Employee::with('role.acls:role_id,object,operation')->find(Auth::id());
+            if ($user->is_disabled) {
+                return $this->sendError('Maaf akun anda telah di nonaktifkan');
+            }
             $success['token'] = $user->createToken('melcafe')->accessToken;
             //$success['user'] = $user;
             return $this->sendResponse($success, 'User login success');
