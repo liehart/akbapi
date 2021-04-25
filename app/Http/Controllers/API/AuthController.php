@@ -15,8 +15,11 @@ class AuthController extends BaseController
     {
         $userid = Auth::guard('api')->id();
         if ($userid) {
-            $user = Employee::with('role.acls:role_id,object,operation')->find($userid);
-            return $this->sendResponse($user, 'User retrieved');
+            $data = [];
+            $data['user'] = Employee::with('role')->find($userid);
+            $data['scope'] = array('customer.read', 'BEY');
+            return response()->json($data, 201);
+//            return $this->sendResponse($data, 'User retrieved');
         }
 
         return $this->sendError('Unauthorised.', ['error'=>'Unauthorised']);

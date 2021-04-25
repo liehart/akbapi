@@ -4,12 +4,13 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\Employee;
-use App\Models\EmployeeRole;
+use App\Models\Permission;
+use App\Models\Role;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class EmployeeRoleController extends BaseController
+class RoleController extends BaseController
 {
     /**
      * Display a listing of the resource.
@@ -18,7 +19,7 @@ class EmployeeRoleController extends BaseController
      */
     public function index(): JsonResponse
     {
-        $roles = EmployeeRole::with('acls:role_id,object,operation')->paginate(10);
+        $roles = Role::with('permission')->paginate(10);
 
         foreach($roles as $role)
         {
@@ -39,7 +40,7 @@ class EmployeeRoleController extends BaseController
 
     public function select(): JsonResponse
     {
-        $role = EmployeeRole::all('name', 'id as value');
+        $role = Role::all('name', 'id as value');
 
         if (count($role) > 0)
             return $this->sendResponse($role, 'Role retrieved successfully');
@@ -50,7 +51,7 @@ class EmployeeRoleController extends BaseController
     public function search(Request $request): JsonResponse
     {
         $query = $request->query('query');
-        $roles = EmployeeRole::with('acls')->orderBy('name')->where('name', 'like', '%' . $query . '%')
+        $roles = Role::orderBy('name')->where('name', 'like', '%' . $query . '%')
             ->paginate(10);
 
         foreach($roles as $role)
@@ -68,6 +69,29 @@ class EmployeeRoleController extends BaseController
         $roles->setPath('');
 
         return $this->sendResponse($roles, 'OK');
+    }
+
+    public function permission(int $id, Request $request): JsonResponse
+    {
+        $role = Role::find($id);
+
+        if (is_null($role))
+            return $this->sendError('Role not found');
+
+        $requestData = $request->all();
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|exists:permissions',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->sendError('V_ERR', $validator->errors());
+        }
+
+        $permission = Permission::where('name', '=', $requestData['name'])->first();
+
+        $role->permission()->syncWithoutDetaching($permission);
+
+        return $this->sendResponse($role, 'OK');
     }
 
     /**
@@ -88,7 +112,7 @@ class EmployeeRoleController extends BaseController
             return $this->sendError('V_ERR', $validator->errors());
         }
 
-        $role = EmployeeRole::create($requestData);
+        $role = Role::create($requestData);
 
         return $this->sendResponse($role, 'Role create success');
     }
@@ -101,7 +125,7 @@ class EmployeeRoleController extends BaseController
      */
     public function show(int $id): JsonResponse
     {
-        $role = EmployeeRole::with('acls')->find($id);
+        $role = Role::with('permission')->find($id);
 
         if (is_null($role))
             return $this->sendError('Role not found');
@@ -118,7 +142,7 @@ class EmployeeRoleController extends BaseController
      */
     public function update(Request $request, int $id): JsonResponse
     {
-        $role = EmployeeRole::find($id);
+        $role = Role::find($id);
 
         if (is_null($role))
             return $this->sendError('Role not found');
@@ -149,7 +173,7 @@ class EmployeeRoleController extends BaseController
      */
     public function destroy(int $id): JsonResponse
     {
-        $role = EmployeeRole::find($id);
+        $role = Role::find($id);
 
         if (is_null($role))
             return $this->sendError('Role not found');

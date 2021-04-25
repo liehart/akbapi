@@ -28,7 +28,7 @@ class CreateEmployeesTable extends Migration
             $table->bigInteger('role_id')->unsigned();
             $table->foreign('role_id')
                 ->references('id')
-                ->on('employee_roles')
+                ->on('roles')
                 ->onDelete('RESTRICT');
             $table->softDeletes();
             $table->timestamps();

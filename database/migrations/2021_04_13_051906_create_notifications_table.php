@@ -19,7 +19,7 @@ class CreateNotificationsTable extends Migration
             $table->bigInteger('role_id')->unsigned()->nullable();
             $table->foreign('role_id')
                 ->references('id')
-                ->on('employee_roles')
+                ->on('roles')
                 ->onDelete('CASCADE');
             $table->softDeletes();
             $table->timestamps();

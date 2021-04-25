@@ -3,7 +3,7 @@
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\CustomerController;
 use App\Http\Controllers\API\EmployeeController;
-use App\Http\Controllers\API\EmployeeRoleController;
+use App\Http\Controllers\API\RoleController;
 use App\Http\Controllers\API\FileController;
 use App\Http\Controllers\API\IngredientController;
 use App\Http\Controllers\API\MenuController;
@@ -32,7 +32,7 @@ Route::resource('card', TransactionCardController::class);
 Route::resource('menu', MenuController::class);
 Route::resource('ingredient', IngredientController::class);
 Route::resource('reservation', ReservationController::class);
-Route::resource('role', EmployeeRoleController::class);
+Route::resource('role', RoleController::class);
 Route::resource('employee', EmployeeController::class);
 Route::resource('history', StockHistoryController::class);
 Route::resource('order', OrderController::class);
@@ -47,7 +47,7 @@ Route::prefix('auth')->group(function () {
 });
 
 Route::post('menu/image/{id}', [MenuController::class, 'updateImage']);
-Route::get('select/role', [EmployeeRoleController::class, 'select']);
+Route::get('select/role', [RoleController::class, 'select']);
 Route::post('employee/{id}/deactivate', [EmployeeController::class, 'deactivate']);
 Route::post('employee/{id}/activate', [EmployeeController::class, 'activate']);
 
@@ -57,6 +57,9 @@ Route::get('test', function () {
 });
 
 Route::get('search/customer', [CustomerController::class, 'search']);
-Route::get('search/role', [EmployeeRoleController::class, 'search']);
+Route::get('search/role', [RoleController::class, 'search']);
 Route::get('search/employee', [EmployeeController::class, 'search']);
 Route::get('search/table', [TableController::class, 'search']);
+
+
+Route::post('role/{id}/permission', [RoleController::class, 'permission']);

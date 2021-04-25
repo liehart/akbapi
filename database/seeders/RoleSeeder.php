@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class EmployeeRoleSeeder extends Seeder
+class RoleSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -47,6 +47,6 @@ class EmployeeRoleSeeder extends Seeder
                 'updated_at' => now()
             ]
         ];
-        DB::table('employee_roles')->insert($roles);
+        DB::table('roles')->insert($roles);
     }
 }
