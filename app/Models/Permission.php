@@ -10,4 +10,7 @@ class Permission extends Model
 {
     use HasFactory;
 
+    protected $hidden = [
+        'deleted_at', 'pivot'
+    ];
 }

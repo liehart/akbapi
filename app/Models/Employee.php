@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -31,7 +32,9 @@ class Employee extends Authenticatable
         'remember_token',
     ];
 
-    public function role() {
+    public function role(): BelongsTo
+    {
         return $this->belongsTo('App\Models\Role');
     }
+
 }

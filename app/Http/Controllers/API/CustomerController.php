@@ -30,7 +30,8 @@ class CustomerController extends BaseController
     public function search(Request $request): JsonResponse
     {
         $query = $request->query('query');
-        $customers = Customer::orderBy('name')->where('name', 'like', '%' . $query . '%')
+        $customers = Customer::orderBy('name')
+            ->where('name', 'like', '%' . $query . '%')
             ->orWhere('email', 'like', '%' . $query . '%')
             ->orWhere('phone', 'like', '%' . $query . '%')
             ->paginate(10);

@@ -19,9 +19,10 @@ class EmployeeController extends BaseController
      */
     public function index(): JsonResponse
     {
-        $employee = Employee::with('role')->paginate(5);
-        $employee->onEachSide(2);
-        $employee->setPath('');
+        $employee = Employee::with('role')
+            ->paginate(5)
+            ->onEachSide(2)
+            ->setPath('');
 
         if (count($employee) > 0)
             return $this->sendResponse($employee, 'Employee retrieved successfully');
@@ -32,7 +33,9 @@ class EmployeeController extends BaseController
     public function search(Request $request): JsonResponse
     {
         $query = $request->query('query');
-        $employees = Employee::with('role')->orderBy('name')->where('name', 'like', '%' . $query . '%')
+        $employees = Employee::with('role')
+            ->orderBy('name')
+            ->where('name', 'like', '%' . $query . '%')
             ->orWhere('email', 'like', '%' . $query . '%')
             ->orWhere('phone', 'like', '%' . $query . '%')
             ->paginate(10);
@@ -171,32 +174,35 @@ class EmployeeController extends BaseController
         return $this->sendResponse(null, 'Employee deleted successfully.');
     }
 
+    /**
+     * Update password for logged in user
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function updatePassword(Request $request): JsonResponse
     {
-        $user = Auth::guard('api')->user();
-        if ($user) {
-            $requestData = $request->all();
-            $validator = Validator::make($request->all(), [
-                'password' => 'required',
-                'new_password' => 'required|different:oldPassword'
-            ]);
+        $user = Auth::user();
 
-            if ($validator->fails()) {
-                return $this->sendError('V_ERR', $validator->errors());
-            }
+        $requestData = $request->all();
+        $validator = Validator::make($request->all(), [
+            'password' => 'required',
+            'new_password' => 'required|different:oldPassword'
+        ]);
 
-            if (Auth::attempt([
-                'email' => $user->email,
-                'password' => $requestData['password']
-            ])) {
-                $user->password = bcrypt($requestData['new_password']);
-                $user->save();
-                return $this->sendResponse(null, 'Employee updated successfully.');
-            }
-            return $this->sendError('OLD_WRONG');
+        if ($validator->fails()) {
+            return $this->sendError('V_ERR', $validator->errors());
         }
 
-        return $this->sendError('Unauthorised');
+        if (Auth::attempt([
+            'email' => $user->email,
+            'password' => $requestData['password']
+        ])) {
+            $user->password = bcrypt($requestData['new_password']);
+            $user->save();
+
+            return $this->sendResponse(null, 'Employee updated successfully.');
+        }
     }
 }
 

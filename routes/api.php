@@ -40,9 +40,11 @@ Route::resource('file', FileController::class);
 Route::resource('order/{order_id}/detail', OrderDetailController::class);
 
 Route::prefix('auth')->group(function () {
-    Route::post('/', [AuthController::class, 'index'])->middleware('auth:api');
-    Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:api');
-    Route::post('password', [EmployeeController::class, 'updatePassword']);
+    Route::group(['middleware' => ['auth:api']], function () {
+        Route::post('/', [AuthController::class, 'index']);
+        Route::post('logout', [AuthController::class, 'logout']);
+        Route::post('password', [EmployeeController::class, 'updatePassword']);
+    });
     Route::post('login', [AuthController::class, 'login']);
 });
 
@@ -62,6 +64,5 @@ Route::get('search/customer', [CustomerController::class, 'search']);
 Route::get('search/role', [RoleController::class, 'search']);
 Route::get('search/employee', [EmployeeController::class, 'search']);
 Route::get('search/table', [TableController::class, 'search']);
-
 
 Route::post('role/{id}/permission', [RoleController::class, 'permission']);
