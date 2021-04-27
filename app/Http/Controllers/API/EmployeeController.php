@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
-use App\Models\Customer;
 use App\Models\Employee;
+use Dotenv\Util\Str;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Intervention\Image\Facades\Image;
 
 class EmployeeController extends BaseController
 {
@@ -50,6 +52,7 @@ class EmployeeController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
+     * @throws FileNotFoundException
      */
     public function store(Request $request): JsonResponse
     {
@@ -69,6 +72,13 @@ class EmployeeController extends BaseController
         }
 
         $requestData['password'] = bcrypt($requestData['password']);
+
+        $requestData['image_path'] = $this->getImagePath(
+            $requestData['image_path'],
+            $requestData['properties'],
+            $requestData['image_delete']
+        );
+
 
         $employee = Employee::create($requestData);
 
@@ -151,6 +161,13 @@ class EmployeeController extends BaseController
         $employee->date_join = $requestData['date_join'];
         $employee->gender = $requestData['gender'];
         $employee->role_id = $requestData['role_id'];
+
+        $employee->image_path = $this->getImagePath(
+            $requestData['image_path'],
+            $requestData['properties'],
+            $requestData['image_delete']
+        );
+
         $employee->save();
 
         return $this->sendResponse($employee, 'Employee updated success', 200);
@@ -202,6 +219,27 @@ class EmployeeController extends BaseController
             $user->save();
 
             return $this->sendResponse(null, 'Employee updated successfully.');
+        }
+    }
+
+    private function getImagePath($image_path, $properties, $image_delete): string
+    {
+        if ($image_delete) {
+            return '';
+        } else {
+            if ($image_path) {
+                $disk = Storage::disk('s3');
+                $temporary = $disk->get('temporary/' . $image_path);
+                $image = Image::make($temporary)
+                    ->crop(
+                        $properties['width'],
+                        $properties['height'],
+                        $properties['x'],
+                        $properties['y'])
+                    ->resize(200, 200);
+                $disk->put('avatar/' . $image_path, $image->stream(), 'public');
+                return $disk->url('avatar/' . $image_path);
+            }
         }
     }
 }

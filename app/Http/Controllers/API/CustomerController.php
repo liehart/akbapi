@@ -127,10 +127,23 @@ class CustomerController extends BaseController
      */
     public function destroy(int $id): JsonResponse
     {
-        $customer = Customer::find($id);
+        $customer = Customer::with('reservation')
+            ->find($id);
 
         if (is_null($customer))
             return $this->sendError('Customer not found');
+
+        foreach($customer->reservation as $reservation)
+        {
+            if ($reservation->status == 'new') {
+                $reservation->status = 'cancelled';
+            } elseif ($reservation->status == 'in') {
+                return $this->sendError(
+                    'Tidak dapat menghapus pelanggan karena sedang melakukan pemesanan'
+                );
+            }
+            $reservation->save();
+        }
 
         $customer->delete();
 

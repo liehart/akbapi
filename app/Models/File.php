@@ -11,7 +11,12 @@ class File extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'file_name', 'path'
+        'original_file_name',
+        's3_file_name',
+        'scope',
+        'content_type',
+        'file_size',
+        'path'
     ];
 
     protected $hidden = [

@@ -12,9 +12,9 @@ class Table extends Model
 
     protected $primaryKey = 'table_number';
 
-    protected $casts = [
-        'table_number' => 'string',
-    ];
+//    protected $casts = [
+//        'table_number' => 'string',
+//    ];
 
     protected $fillable = [
         'table_number',
@@ -24,4 +24,8 @@ class Table extends Model
     protected $hidden = [
         'deleted_at',
     ];
+
+    public function reservation() {
+        return $this->hasMany('App\Models\Reservation', 'table_number', 'table_number');
+    }
 }

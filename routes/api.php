@@ -36,7 +36,6 @@ Route::resource('role', RoleController::class);
 Route::resource('employee', EmployeeController::class);
 Route::resource('history', StockHistoryController::class);
 Route::resource('order', OrderController::class);
-Route::resource('file', FileController::class);
 Route::resource('order/{order_id}/detail', OrderDetailController::class);
 
 Route::prefix('auth')->group(function () {
@@ -48,9 +47,12 @@ Route::prefix('auth')->group(function () {
     Route::post('login', [AuthController::class, 'login']);
 });
 
+Route::post('reservation/{id}/cancel', [ReservationController::class, 'cancel']);
 Route::post('menu/image/{id}', [MenuController::class, 'updateImage']);
 Route::post('employee/{id}/deactivate', [EmployeeController::class, 'deactivate']);
 Route::post('employee/{id}/activate', [EmployeeController::class, 'activate']);
+
+Route::post('file/avatar', [FileController::class, 'avatar']);
 
 Route::get('test', function () {
     event(new App\Events\CustomerCreated('Someone'));
@@ -64,5 +66,3 @@ Route::get('search/customer', [CustomerController::class, 'search']);
 Route::get('search/role', [RoleController::class, 'search']);
 Route::get('search/employee', [EmployeeController::class, 'search']);
 Route::get('search/table', [TableController::class, 'search']);
-
-Route::post('role/{id}/permission', [RoleController::class, 'permission']);

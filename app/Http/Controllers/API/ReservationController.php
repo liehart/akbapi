@@ -18,7 +18,10 @@ class ReservationController extends BaseController
      */
     public function index(): JsonResponse
     {
-        $reservation = Reservation::with('customer:id,name,deleted_at')->orderBy('date')->paginate(10);
+        $reservation = Reservation::with('customer:id,name,deleted_at')
+            ->with('table')
+            ->orderBy('date')
+            ->paginate(10);
         $reservation->onEachSide(2);
         $reservation->setPath('');
 
@@ -39,7 +42,7 @@ class ReservationController extends BaseController
         $store_data = $request->all();
         $validator = Validator::make($store_data, [
             'date' => 'required|date',
-            'session' => 'required|in:lunch,dinner,other',
+            'session' => 'required|in:lunch,dinner',
             'table_number' => 'required|exists:tables,table_number',
             'customer_id' => 'required|exists:customers,id'
         ]);
@@ -48,18 +51,7 @@ class ReservationController extends BaseController
             return $this->sendError('Validation error', $validator->errors());
         }
 
-        date_default_timezone_set('Asia/Jakarta');
-
-        if ($store_data['date'] != date('Y-m-d') && $store_data['session'] == 'other') {
-            return $this->sendError('Reservasi diluar sesi hanya dilayani hari H');
-        }
-
         $reservation = Reservation::create($store_data);
-
-        if (date('Y-m-d') == $store_data['date']) {
-            $reservation->table->is_empty = true;
-            $reservation->table->save();
-        }
 
         return $this->sendResponse($reservation, 'Reservation created successfully');
     }
@@ -80,6 +72,21 @@ class ReservationController extends BaseController
         return $this->sendResponse($reservation, 'Reservation retrieved successfully.');
     }
 
+    public function cancel(int $id): JsonResponse
+    {
+        $reservation = Reservation::find($id);
+
+        if (is_null($reservation))
+            return $this->sendError('Reservation not found');
+
+        $reservation->status = 'cancelled';
+
+        $reservation->save();
+
+        return $this->sendResponse($reservation, 'Reservation updated successfully');
+
+    }
+
     /**
      * Update the specified resource in storage.
      *
@@ -96,9 +103,9 @@ class ReservationController extends BaseController
 
         $store_data = $request->all();
         $validator = Validator::make($store_data, [
-            'reservation_date' => 'required|date',
-            'reservation_session' => 'required|in:lunch,dinner,other',
-            'table_table_number' => 'required|exists:tables,table_number',
+            'date' => 'required|date',
+            'session' => 'required|in:lunch,dinner',
+            'table_number' => 'required|exists:tables,table_number',
             'customer_id' => 'required|exists:customers,id'
         ]);
 
@@ -106,9 +113,9 @@ class ReservationController extends BaseController
             return $this->sendError('Validation error', $validator->errors());
         }
 
-        $reservation->reservation_date = $store_data['reservation_date'];
-        $reservation->reservation_session = $store_data['reservation_session'];
-        $reservation->table_table_number = $store_data['table_table_number'];
+        $reservation->date = $store_data['date'];
+        $reservation->session = $store_data['session'];
+        $reservation->table_number = $store_data['table_number'];
         $reservation->customer_id = $store_data['customer_id'];
 
         $reservation->save();

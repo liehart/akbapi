@@ -81,29 +81,6 @@ class RoleController extends BaseController
         return $this->sendError('Role empty');
     }
 
-    public function permission_old(int $id, Request $request): JsonResponse
-    {
-        $role = Role::find($id);
-
-        if (is_null($role))
-            return $this->sendError('Role not found');
-
-        $requestData = $request->all();
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|exists:permissions',
-        ]);
-
-        if ($validator->fails()) {
-            return $this->sendError('V_ERR', $validator->errors());
-        }
-
-        $permission = Permission::where('name', '=', $requestData['name'])->first();
-
-        $role->permission()->syncWithoutDetaching($permission);
-
-        return $this->sendResponse($role, 'OK');
-    }
-
     /**
      * Store a newly created resource in storage.
      *
@@ -183,7 +160,6 @@ class RoleController extends BaseController
         $role->save();
 
         return $this->sendResponse($role, 'Role update success');
-
     }
 
     /**

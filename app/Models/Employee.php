@@ -23,7 +23,8 @@ class Employee extends Authenticatable
         'email',
         'password',
         'role_id',
-        'is_disabled'
+        'is_disabled',
+        'image_path'
     ];
 
     protected $hidden = [

@@ -15,7 +15,11 @@ class CreateFilesTable extends Migration
     {
         Schema::create('files', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('file_name');
+            $table->string('original_file_name');
+            $table->string('s3_file_name');
+            $table->enum('scope', ['avatar']);
+            $table->string('content_type');
+            $table->bigInteger('file_size');
             $table->string('path');
             $table->softDeletes();
             $table->timestamps();

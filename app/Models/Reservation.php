@@ -15,7 +15,8 @@ class Reservation extends Model
         'date',
         'session',
         'table_number',
-        'customer_id'
+        'customer_id',
+        'status'
     ];
 
     protected $hidden = [

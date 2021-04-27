@@ -125,6 +125,123 @@ class PermissionSeeder extends Seeder
                 'label' => 'Delete Reservation',
                 'description' => 'Allow user to delete reservation data'
             ],
+
+            // Order
+            [
+                'name' => 'order.create',
+                'label' => 'Create Order',
+                'description' => 'Allow user to add new order'
+            ],
+            [
+                'name' => 'order.read',
+                'label' => 'Show Order',
+                'description' => 'Allow user to read order data'
+            ],
+            [
+                'name' => 'order.update',
+                'label' => 'Update Order',
+                'description' => 'Allow user to update order data'
+            ],
+            [
+                'name' => 'order.delete',
+                'label' => 'Delete Order',
+                'description' => 'Allow user to delete order data'
+            ],
+
+            // Transaction
+            [
+                'name' => 'transaction.create',
+                'label' => 'Create Transaction',
+                'description' => 'Allow user to add new transaction'
+            ],
+            [
+                'name' => 'transaction.read',
+                'label' => 'Show Transaction',
+                'description' => 'Allow user to read transaction data'
+            ],
+            [
+                'name' => 'transaction.update',
+                'label' => 'Update Transaction',
+                'description' => 'Allow user to update transaction data'
+            ],
+            [
+                'name' => 'transaction.delete',
+                'label' => 'Delete Transaction',
+                'description' => 'Allow user to delete transaction data'
+            ],
+
+            // Menu
+            [
+                'name' => 'menu.create',
+                'label' => 'Create Menu',
+                'description' => 'Allow user to add new menu'
+            ],
+            [
+                'name' => 'menu.read',
+                'label' => 'Show Menu',
+                'description' => 'Allow user to read menu data'
+            ],
+            [
+                'name' => 'menu.update',
+                'label' => 'Update Menu',
+                'description' => 'Allow user to update menu data'
+            ],
+            [
+                'name' => 'menu.delete',
+                'label' => 'Delete Menu',
+                'description' => 'Allow user to delete menu data'
+            ],
+
+            // Ingredient
+            [
+                'name' => 'ingredient.create',
+                'label' => 'Create Ingredient',
+                'description' => 'Allow user to add new ingredient'
+            ],
+            [
+                'name' => 'ingredient.read',
+                'label' => 'Show Ingredient',
+                'description' => 'Allow user to read ingredient data'
+            ],
+            [
+                'name' => 'ingredient.update',
+                'label' => 'Update Ingredient',
+                'description' => 'Allow user to update ingredient data'
+            ],
+            [
+                'name' => 'ingredient.delete',
+                'label' => 'Delete Ingredient',
+                'description' => 'Allow user to delete ingredient data'
+            ],
+
+            // Stock
+            [
+                'name' => 'stock.create',
+                'label' => 'Create Stock',
+                'description' => 'Allow user to add new stock'
+            ],
+            [
+                'name' => 'stock.read',
+                'label' => 'Show Stock',
+                'description' => 'Allow user to read stock data'
+            ],
+            [
+                'name' => 'stock.update',
+                'label' => 'Update Stock',
+                'description' => 'Allow user to update stock data'
+            ],
+            [
+                'name' => 'stock.delete',
+                'label' => 'Delete Stock',
+                'description' => 'Allow user to delete stock data'
+            ],
+
+            // Report
+            [
+                'name' => 'report.read',
+                'label' => 'Show Report',
+                'description' => 'Allow user to read report data'
+            ]
         ];
 
         DB::table('permissions')->insert($permissions);

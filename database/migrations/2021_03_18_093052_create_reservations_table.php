@@ -16,7 +16,8 @@ class CreateReservationsTable extends Migration
         Schema::create('reservations', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->date('date');
-            $table->enum('session', ['lunch', 'dinner', 'other']);
+            $table->enum('session', ['lunch', 'dinner']);
+            $table->enum('status', ['new', 'in', 'done', 'cancelled'])->default('new');
             $table->bigInteger('table_number')->unsigned();
             $table->foreign('table_number')
                 ->references('table_number')
