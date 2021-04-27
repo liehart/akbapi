@@ -241,6 +241,8 @@ class EmployeeController extends BaseController
                 return $disk->url('avatar/' . $image_path);
             }
         }
+        return '';
     }
+
 }
 
