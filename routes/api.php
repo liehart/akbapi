@@ -10,6 +10,7 @@ use App\Http\Controllers\API\MenuController;
 use App\Http\Controllers\API\OrderController;
 use App\Http\Controllers\API\OrderDetailController;
 use App\Http\Controllers\API\ReservationController;
+use App\Http\Controllers\API\StatisticController;
 use App\Http\Controllers\API\StockHistoryController;
 use App\Http\Controllers\API\TableController;
 use App\Http\Controllers\API\TransactionCardController;
@@ -53,6 +54,8 @@ Route::post('employee/{id}/deactivate', [EmployeeController::class, 'deactivate'
 Route::post('employee/{id}/activate', [EmployeeController::class, 'activate']);
 
 Route::post('file/avatar', [FileController::class, 'avatar']);
+
+Route::get('statistic', [StatisticController::class, 'index']);
 
 Route::get('test', function () {
     event(new App\Events\CustomerCreated('Someone'));
