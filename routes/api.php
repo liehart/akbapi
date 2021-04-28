@@ -57,6 +57,8 @@ Route::post('file/avatar', [FileController::class, 'avatar']);
 
 Route::get('statistic', [StatisticController::class, 'index']);
 
+Route::post('search/reservation', [ReservationController::class, 'search']);
+
 Route::get('test', function () {
     event(new App\Events\CustomerCreated('Someone'));
     return "Event has been sent!";

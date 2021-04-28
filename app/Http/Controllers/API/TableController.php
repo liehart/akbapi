@@ -23,11 +23,14 @@ class TableController extends BaseController
         $edit = $request->query('edit');
 
         $tables = Table::with(['reservation' => function ($qq) use ($request, $date, $session, $edit) {
-            $qq->when($request->filled('date'), function ($q) use ($date) {
+            $qq->with('customer')
+                ->when($request->filled('date'), function ($q) use ($date) {
                 $q->where('date', $date);
-            })->when($request->filled('session'), function ($q) use ($session) {
+            })
+                ->when($request->filled('session'), function ($q) use ($session) {
                 $q->where('session', '=', $session);
-            })->when($request->filled('edit'), function ($q) use ($edit) {
+            })
+                ->when($request->filled('edit'), function ($q) use ($edit) {
                 $q->where('id', '!=', $edit);
             })
                 ->where('status', '!=', 'cancelled')
@@ -44,31 +47,6 @@ class TableController extends BaseController
 
         return $this->sendResponse($tables, 'OK');
     }
-
-//    public function search(Request $request): JsonResponse
-//    {
-//        $query = $request->query('query');
-//        $date = $request->query('date');
-//        $session = $request->query('session');
-//
-//        $tables = Table::with(['reservation' => function ($qq) use ($request, $date, $session) {
-//            $qq->when($request->filled('date'), function ($q) use ($date) {
-//                $q->where('date', $date);
-//            })->when($request->filled('session'), function ($q) use ($session) {
-//                $q->where('session', '=', $session);
-//            })->where('status', '!=', 'cancelled');
-//        }])
-//            ->when($request->filled('query'), function ($q) use ($query) {
-//                $q->where('table_number', 'like', '%' . $query . '%');
-//            })
-//            ->orderBy('table_number')
-//            ->paginate(15);
-//
-//        $tables->onEachSide(2);
-//        $tables->setPath('');
-//
-//        return $this->sendResponse($tables, 'OK');
-//    }
 
     /**
      * Store a newly created resource in storage.
@@ -100,7 +78,8 @@ class TableController extends BaseController
      */
     public function show(int $id): JsonResponse
     {
-        $table = Table::find($id);
+        $table = Table::with('reservation')
+            ->find($id);
 
         if (is_null($table))
             return $this->sendError('Table not found');

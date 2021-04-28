@@ -162,11 +162,13 @@ class EmployeeController extends BaseController
         $employee->gender = $requestData['gender'];
         $employee->role_id = $requestData['role_id'];
 
-        $employee->image_path = $this->getImagePath(
-            $requestData['image_path'],
-            $requestData['properties'],
-            $requestData['image_delete']
-        );
+        if ($requestData['image_change']) {
+            $employee->image_path = $this->getImagePath(
+                $requestData['image_path'],
+                $requestData['properties'],
+                $requestData['image_delete']
+            );
+        }
 
         $employee->save();
 

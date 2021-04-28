@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
 use App\Models\Reservation;
-use Faker\Provider\Base;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -14,11 +13,39 @@ class ReservationController extends BaseController
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @return JsonResponse
      */
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        $reservation = Reservation::with('customer:id,name,deleted_at')
+        $search = $request->query('search');
+        $from = $request->query('from');
+        $to = $request->query('to');
+        $hide = $request->query('hide');
+        $rawStatus = $request->query('status');
+        $status = json_decode($rawStatus);
+
+        $reservation = Reservation::with('customer')
+            ->whereHas(
+            'customer', function ($qq) use ($request, $search) {
+                $qq->when($request->filled('search'), function ($q) use ($search) {
+                    $q->where('name', 'like', '%' . $search . '%');
+                });
+            })
+            ->when($request->filled('from'), function ($q) use ($from) {
+                $q->where('date', '>=', $from);
+            })
+            ->when($request->filled('to'), function ($q) use ($to) {
+                $q->where('date', '<=', $to);
+            })
+            ->when($request->filled('hide'), function ($q) use ($hide) {
+                if ($hide == 1) {
+                    $q->where('date', '>=', Carbon::today());
+                }
+            })
+            ->when($request->filled('status '), function ($q) use ($status) {
+                $q->whereIn('status', $status);
+            })
             ->with('table')
             ->orderBy('date')
             ->paginate(10);
@@ -28,7 +55,50 @@ class ReservationController extends BaseController
         if (count($reservation) > 0)
             return $this->sendResponse($reservation, 'Reservation retrieved successfully');
 
-        return $this->sendResponse($reservation,'Reservation empty');
+        return $this->sendResponse($reservation, 'Reservation empty');
+    }
+
+    public function search(Request $request): JsonResponse
+    {
+
+        $data = $request->all();
+        $search = $data['search'] ?? '';
+        $from = $data['from'] ?? '';
+        $hide = $data['hide'] ?? '';
+        $to = $data['to'] ?? '';
+        $status = $data['status'] ?? [];
+
+        $reservation = Reservation::with('customer')
+            ->whereHas(
+                'customer', function ($qq) use ($request, $search) {
+                $qq->when($request->filled('search'), function ($q) use ($search) {
+                    $q->where('name', 'like', '%' . $search . '%');
+                });
+            })
+            ->when($request->filled('from'), function ($q) use ($from) {
+                $q->where('date', '>=', $from);
+            })
+            ->when($request->filled('to'), function ($q) use ($to) {
+                $q->where('date', '<=', $to);
+            })
+            ->when($request->filled('hide'), function ($q) use ($hide) {
+                if ($hide == 1) {
+                    $q->where('date', '>=', Carbon::today());
+                }
+            })
+            ->when($request->filled('status'), function ($q) use ($status) {
+                $q->whereIn('status', $status);
+            })
+            ->with('table')
+            ->orderBy('date')
+            ->paginate(10);
+        $reservation->onEachSide(2);
+        $reservation->setPath('');
+
+        if (count($reservation) > 0)
+            return $this->sendResponse($reservation, 'Reservation retrieved successfully');
+
+        return $this->sendResponse($reservation, 'Reservation empty');
     }
 
     /**
