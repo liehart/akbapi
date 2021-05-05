@@ -17,13 +17,12 @@ class CreateMenusTable extends Migration
             $table->bigIncrements('id');
             $table->string('name');
             $table->string('description');
-            $table->integer('price');
+            $table->enum('menu_type', ['side_dish', 'drink', 'main']);
             $table->string('unit');
             $table->boolean('is_available')->default(false);
-            $table->enum('menu_type', ['side_dish', 'drink', 'main']);
-            $table->string('image_path')->nullable();
-            $table->softDeletes();
+            $table->integer('price');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

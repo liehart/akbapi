@@ -16,14 +16,16 @@ class MenuController extends BaseController
      *
      * @return JsonResponse
      */
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        $menu = Menu::all();
+        $search = $request->query('search');
 
-        if (count($menu) > 0)
-            return $this->sendResponse($menu, 'Menu retrieved successfully');
+        $menus = Menu::orderBy('name')
+            ->paginate(10)
+            ->onEachSide(2)
+            ->setPath('');
 
-        return $this->sendError('Menu empty');
+        return $this->sendResponse($menus, 'Menu retrieved successfully');
     }
 
     /**
@@ -46,19 +48,6 @@ class MenuController extends BaseController
         if ($validator->fails()) {
             return $this->sendError('Validation error', $validator->errors());
         }
-
-        $url = "";
-
-        if ($request->hasFile('image')) {
-            if ($request->file('image')->isValid()) {
-                $extension = $request->image->extension();
-                $name = $_SERVER['REQUEST_TIME'];
-                $request->image->storeAs('/public', $name.".".$extension);
-                $url = Storage::url($name.".".$extension);
-            }
-        }
-
-        $store_data['image_path'] = $url;
 
         $menu = Menu::create($store_data);
 
@@ -135,34 +124,5 @@ class MenuController extends BaseController
         $menu->delete();
 
         return $this->sendResponse(null, 'Menu deleted successfully.');
-    }
-
-    public function updateImage(Request $request, $id): JsonResponse
-    {
-        $menu = Menu::find($id);
-
-        if (is_null($menu))
-            return $this->sendError('Menu not found');
-
-        $store_data = $request->all();
-        $validator = Validator::make($store_data, [
-            'image' => 'required',
-        ]);
-
-        if ($validator->fails())
-            return $this->sendError('Validation error', $validator->errors());
-
-        if ($request->hasFile('image')) {
-            if ($request->file('image')->isValid()) {
-                $extension = $request->image->extension();
-                $name = $_SERVER['REQUEST_TIME'];
-                $request->image->storeAs('/public', $name.".".$extension);
-                $menu->image_path = Storage::url($name.".".$extension);
-                $menu->save();
-                return $this->sendResponse(null, 'Update image success');
-            }
-        }
-
-        return $this->sendError('Update image failed');
     }
 }

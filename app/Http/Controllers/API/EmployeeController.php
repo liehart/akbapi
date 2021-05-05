@@ -8,6 +8,7 @@ use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Intervention\Image\Facades\Image;
@@ -206,17 +207,14 @@ class EmployeeController extends BaseController
         $requestData = $request->all();
         $validator = Validator::make($request->all(), [
             'password' => 'required',
-            'new_password' => 'required|different:oldPassword'
+            'new_password' => 'required|different:password'
         ]);
 
         if ($validator->fails()) {
             return $this->sendError('V_ERR', $validator->errors());
         }
 
-        if (Auth::attempt([
-            'email' => $user->email,
-            'password' => $requestData['password']
-        ])) {
+        if (Hash::check($requestData['password'], Auth::user()->getAuthPassword())) {
             $user->password = bcrypt($requestData['new_password']);
             $user->save();
 
