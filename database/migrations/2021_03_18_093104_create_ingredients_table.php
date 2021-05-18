@@ -15,14 +15,9 @@ class CreateIngredientsTable extends Migration
     {
         Schema::create('ingredients', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('unit');
-            $table->integer('serving_size');
+            $table->string('name', 100);
+            $table->string('unit', 50);
             $table->integer('remaining_stock')->default(0);
-            $table->bigInteger('menu_id')->unsigned();
-            $table->foreign('menu_id')
-                ->references('id')
-                ->on('menus')
-                ->onDelete('CASCADE');
             $table->softDeletes();
             $table->timestamps();
         });

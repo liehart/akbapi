@@ -12,16 +12,38 @@ class IngredientController extends BaseController
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @return JsonResponse
      */
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        $ingredient = Ingredient::all();
+        $v = json_decode($request->query('v'));
+        $query = $v->query ?? '';
+        $sort = $v->sort ?? 'name';
+        $asc = $v->asc ?? 'true';
+        $show = $v->show ?? 10;
+        $page = $v->page ?? 1;
+        $select = $v->select ?? 'no';
+        $select_id = $v->select_id ?? null;
 
-        if (count($ingredient) > 0)
-            return $this->sendResponse($ingredient, 'Ingredient retrieved successfully');
+        $menus = Ingredient::when($sort, function ($q) use ($sort, $asc) {
+            $q->orderBy($sort, $asc == 'true' ? 'asc' : 'desc');
+        })
+            ->when($select == 'yes', function ($q) use ($select, $select_id) {
+                $q->doesntHave('menu')->when($select_id, function ($qq) use ($select_id) {
+                    $qq->orWhereHas('menu', function($qqq) use ($select_id) {
+                        $qqq->where('ingredient_id', '=', $select_id);
+                    });
+                });
+            })
+            ->when($query, function ($q) use ($query) {
+                $q->where('name', 'like', '%' . $query . '%');
+            })
+            ->paginate($show, ['*'], 'page', $page)
+            ->onEachSide(2)
+            ->setPath('');
 
-        return $this->sendError('Ingredient empty');
+        return $this->sendResponse($menus, 'Ingredients retrieved successfully');
     }
 
     /**
@@ -35,12 +57,11 @@ class IngredientController extends BaseController
         $store_data = $request->all();
         $validator = Validator::make($store_data, [
             'unit' => 'required|alpha',
-            'serving_size' => 'required|numeric',
-            'menu_id' => 'required|exists:menus,id'
+            'name' => 'required'
         ]);
 
         if ($validator->fails()) {
-            return $this->sendError('Validation error', $validator->errors());
+            return $this->sendError('V_ERR', $validator->errors());
         }
 
         $ingredient = Ingredient::create($store_data);
@@ -83,17 +104,15 @@ class IngredientController extends BaseController
         $store_data = $request->all();
         $validator = Validator::make($store_data, [
             'unit' => 'required|alpha',
-            'serving_size' => 'required|numeric',
-            'menu_id' => 'required|exists:menus,id'
+            'name' => 'required'
         ]);
 
         if ($validator->fails()) {
-            return $this->sendError('Validation error', $validator->errors());
+            return $this->sendError('V_ERR', $validator->errors());
         }
 
         $ingredient->unit = $store_data['unit'];
-        $ingredient->serving_size = $store_data['serving_size'];
-        $ingredient->menu_id = $store_data['menu_id'];
+        $ingredient->name = $store_data['name'];
         $ingredient->save();
 
         return $this->sendResponse($ingredient, 'Ingredient updated successfull');

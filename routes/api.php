@@ -3,6 +3,8 @@
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\CustomerController;
 use App\Http\Controllers\API\EmployeeController;
+use App\Http\Controllers\API\IncomingStockController;
+use App\Http\Controllers\API\OutgoingStockController;
 use App\Http\Controllers\API\RoleController;
 use App\Http\Controllers\API\FileController;
 use App\Http\Controllers\API\IngredientController;
@@ -35,7 +37,8 @@ Route::resource('ingredient', IngredientController::class);
 Route::resource('reservation', ReservationController::class);
 Route::resource('role', RoleController::class);
 Route::resource('employee', EmployeeController::class);
-Route::resource('history', StockHistoryController::class);
+Route::resource('history/incoming', IncomingStockController::class);
+Route::resource('history/outgoing', OutgoingStockController::class);
 Route::resource('order', OrderController::class);
 Route::resource('order/{order_id}/detail', OrderDetailController::class);
 
@@ -53,7 +56,14 @@ Route::post('menu/image/{id}', [MenuController::class, 'updateImage']);
 Route::post('employee/{id}/deactivate', [EmployeeController::class, 'deactivate']);
 Route::post('employee/{id}/activate', [EmployeeController::class, 'activate']);
 
+Route::post('menu/get', [MenuController::class, 'indexPost']);
+
+
 Route::post('file/avatar', [FileController::class, 'avatar']);
+Route::post('file/menu', [FileController::class, 'menu']);
+
+Route::post('menu/{id}/enable', [MenuController::class, 'enable']);
+Route::post('menu/{id}/refresh', [MenuController::class, 'refresh']);
 
 Route::get('statistic', [StatisticController::class, 'index']);
 

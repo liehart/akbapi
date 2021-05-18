@@ -222,7 +222,7 @@ class EmployeeController extends BaseController
         }
     }
 
-    private function getImagePath($image_path, $properties, $image_delete): string
+    public function getImagePath($image_path, $properties, $image_delete, $scope = 'avatar'): string
     {
         if ($image_delete) {
             return '';
@@ -236,9 +236,9 @@ class EmployeeController extends BaseController
                         $properties['height'],
                         $properties['x'],
                         $properties['y'])
-                    ->resize(200, 200);
-                $disk->put('avatar/' . $image_path, $image->stream(), 'public');
-                return $disk->url('avatar/' . $image_path);
+                    ->resize(500, 500);
+                $disk->put($scope . '/' . $image_path, $image->stream(), 'public');
+                return $disk->url($scope . '/' . $image_path);
             }
         }
         return '';

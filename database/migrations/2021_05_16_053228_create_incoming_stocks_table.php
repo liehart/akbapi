@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateMenusTable extends Migration
+class CreateIncomingStocksTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,23 +13,23 @@ class CreateMenusTable extends Migration
      */
     public function up()
     {
-        Schema::create('menus', function (Blueprint $table) {
+        Schema::create('incoming_stocks', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('name');
-            $table->string('description');
-            $table->enum('menu_type', ['side_dish', 'drink', 'main']);
-            $table->string('unit');
-            $table->boolean('is_available')->default(false);
+            $table->integer('quantity');
             $table->integer('price');
-            $table->integer('serving_size');
+            $table->dateTime('date')->useCurrent();
             $table->bigInteger('ingredient_id')->unsigned();
             $table->foreign('ingredient_id')
                 ->references('id')
                 ->on('ingredients')
                 ->onDelete('CASCADE');
-            $table->string('image_path')->nullable();
-            $table->timestamps();
+            $table->bigInteger('employee_id')->unsigned();
+            $table->foreign('employee_id')
+                ->references('id')
+                ->on('employees')
+                ->onDelete('CASCADE');
             $table->softDeletes();
+            $table->timestamps();
         });
     }
 
@@ -40,6 +40,6 @@ class CreateMenusTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('menus');
+        Schema::dropIfExists('incoming_stocks');
     }
 }

@@ -7,15 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class StockHistory extends Model
+class OutgoingStock extends Model
 {
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'quantity',
-        'price',
-        'category',
         'ingredient_id',
+        'category',
+        'employee_id'
     ];
 
     protected $hidden = [
@@ -25,5 +25,10 @@ class StockHistory extends Model
     public function ingredient(): BelongsTo
     {
         return $this->belongsTo('App\Models\Ingredient');
+    }
+
+    public function employee(): BelongsTo
+    {
+        return $this->belongsTo('App\Models\Employee');
     }
 }

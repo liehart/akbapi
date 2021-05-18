@@ -16,14 +16,30 @@ class StockHistoryController extends BaseController
      *
      * @return JsonResponse
      */
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        $history = StockHistory::all();
+        $v = json_decode($request->query('v'));
+        $query = $v->query ?? '';
+        $sort = $v->sort ?? 'id';
+        $asc = $v->asc ?? 'true';
+        $show = $v->show ?? 10;
+        $page = $v->page ?? 1;
+        $filter = $v->filter ?? [];
 
-        if (count($history) > 0)
-            return $this->sendResponse($history, 'Stock History retrieved successfully');
+        $menus = StockHistory::with('ingredient.menu')
+            ->where(function($q) use ($filter){
+                foreach($filter as $item){
+                    $q->when($item->value != [] || $item->value, function ($qq) use ($item) {
+                        $qq->whereIn($item->name, $item->value ?? ['*']);
+                    });
+                }
+            })
+            ->orderBy($sort, $asc == 'true' ? 'asc' : 'desc')
+            ->paginate($show, ['*'], 'page', $page)
+            ->onEachSide(2)
+            ->setPath('');
 
-        return $this->sendError('Stock History empty');
+        return $this->sendResponse($menus, 'Menu retrieved successfully');
     }
 
     /**
