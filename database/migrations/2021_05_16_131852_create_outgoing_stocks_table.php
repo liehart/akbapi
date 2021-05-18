@@ -28,7 +28,6 @@ class CreateOutgoingStocksTable extends Migration
                 ->references('id')
                 ->on('employees')
                 ->onDelete('CASCADE');
-            $table->softDeletes();
             $table->timestamps();
         });
     }

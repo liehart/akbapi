@@ -83,8 +83,10 @@ class IncomingStockController extends BaseController
         $ingredient = IncomingStock::create($store_data);
         $ingredient->ingredient->remaining_stock += $store_data['quantity'];
         if ($ingredient->ingredient->remaining_stock > 0) {
-            $ingredient->ingredient->menu->is_available = true;
-            $ingredient->ingredient->menu->save();
+            if ($ingredient->ingredient->menu) {
+                $ingredient->ingredient->menu->is_available = true;
+                $ingredient->ingredient->menu->save();
+            }
         }
         $ingredient->ingredient->save();
 
@@ -111,9 +113,9 @@ class IncomingStockController extends BaseController
      */
     public function update(Request $request, int $id): JsonResponse
     {
-        $menu = IncomingStock::find($id);
+        $ingredient = IncomingStock::find($id);
 
-        if (is_null($menu))
+        if (is_null($ingredient))
             return $this->sendError('Menu not found');
 
         $store_data = $request->all();
@@ -127,15 +129,21 @@ class IncomingStockController extends BaseController
             return $this->sendError('V_ERR', $validator->errors());
         }
 
-        $tampung = $menu->quantity;
-        $menu->quantity = $store_data['quantity'];
-        $menu->ingredient_id = $store_data['ingredient_id'];
-        $menu->price = $store_data['price'];
-        $menu->ingredient->remaining_stock += $store_data['quantity'] - $tampung;
-        $menu->ingredient->save();
-        $menu->save();
+        $tampung = $ingredient->quantity;
+        $ingredient->quantity = $store_data['quantity'];
+        $ingredient->ingredient_id = $store_data['ingredient_id'];
+        $ingredient->price = $store_data['price'];
+        $ingredient->ingredient->remaining_stock += $store_data['quantity'] - $tampung;
+        if ($ingredient->ingredient->remaining_stock > 0) {
+            if ($ingredient->ingredient->menu) {
+                $ingredient->ingredient->menu->is_available = true;
+                $ingredient->ingredient->menu->save();
+            }
+        }
+        $ingredient->ingredient->save();
+        $ingredient->save();
 
-        return $this->sendResponse($menu, 'Ingredient created successfully');
+        return $this->sendResponse($ingredient, 'Ingredient created successfully');
     }
 
     /**

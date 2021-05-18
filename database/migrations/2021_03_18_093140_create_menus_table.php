@@ -26,7 +26,7 @@ class CreateMenusTable extends Migration
             $table->foreign('ingredient_id')
                 ->references('id')
                 ->on('ingredients')
-                ->onDelete('CASCADE');
+                ->onDelete('RESTRICT');
             $table->string('image_path')->nullable();
             $table->timestamps();
             $table->softDeletes();

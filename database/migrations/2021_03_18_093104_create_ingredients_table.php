@@ -18,7 +18,6 @@ class CreateIngredientsTable extends Migration
             $table->string('name', 100);
             $table->string('unit', 50);
             $table->integer('remaining_stock')->default(0);
-            $table->softDeletes();
             $table->timestamps();
         });
     }

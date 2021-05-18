@@ -9,17 +9,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class OutgoingStock extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
 
     protected $fillable = [
         'quantity',
         'ingredient_id',
         'category',
         'employee_id'
-    ];
-
-    protected $hidden = [
-        'deleted_at',
     ];
 
     public function ingredient(): BelongsTo

@@ -85,9 +85,11 @@ class OutgoingStockController extends BaseController
         if (Ingredient::find($store_data['ingredient_id'])->remaining_stock >= $store_data['quantity']) {
             $ingredient = OutgoingStock::create($store_data);
             $ingredient->ingredient->remaining_stock -= $store_data['quantity'];
-            if ($ingredient->ingredient->remaining_stock == 0) {
-                $ingredient->ingredient->menu->is_available = false;
-                $ingredient->ingredient->menu->save();
+            if ($ingredient->ingredient->remaining_stock <= 0) {
+                if ($ingredient->ingredient->menu) {
+                    $ingredient->ingredient->menu->is_available = false;
+                    $ingredient->ingredient->menu->save();
+                }
             }
             $ingredient->ingredient->save();
             return $this->sendResponse($ingredient, 'Ingredient created successfully');
@@ -117,7 +119,7 @@ class OutgoingStockController extends BaseController
      */
     public function update(Request $request, $id)
     {
-        $menu = OutgoingStock::find($id);
+        $ingredient = OutgoingStock::find($id);
 
         if (is_null($menu))
             return $this->sendError('Menu not found');
@@ -133,15 +135,22 @@ class OutgoingStockController extends BaseController
             return $this->sendError('V_ERR', $validator->errors());
         }
 
-        $tampung = $menu->quantity;
-        $menu->quantity = $store_data['quantity'];
-        $menu->ingredient_id = $store_data['ingredient_id'];
-        $menu->price = $store_data['price'];
-        $menu->ingredient->remaining_stock += $store_data['quantity'] - $tampung;
-        $menu->ingredient->save();
-        $menu->save();
+        $tampung = $ingredient->quantity;
+        $ingredient->quantity = $store_data['quantity'];
+        $ingredient->ingredient_id = $store_data['ingredient_id'];
+        $ingredient->price = $store_data['price'];
+        $ingredient->ingredient->remaining_stock += $store_data['quantity'] - $tampung;
+        if ($ingredient->ingredient->remaining_stock <= 0) {
+            if ($ingredient->ingredient->menu) {
+                $ingredient->ingredient->menu->is_available = false;
+                $ingredient->ingredient->menu->save();
+            }
+        }
+        $ingredient->ingredient->save();
+        $ingredient->ingredient->save();
+        $ingredient->save();
 
-        return $this->sendResponse($menu, 'Ingredient created successfully');
+        return $this->sendResponse($ingredient, 'Ingredient created successfully');
 
     }
 

@@ -80,7 +80,7 @@ class MenuController extends BaseController
             'unit' => 'required|alpha',
             'price' => 'required|numeric',
             'menu_type' => 'required|in:side_dish,drink,main',
-            'ingredient_id' => 'required|exists:ingredients,id|unique:menus,ingredient_id',
+            'ingredient_id' => 'required|exists:ingredients,id|unique:menus,ingredient_id,NULL,id,deleted_at,NULL',
             'serving_size' => 'required|numeric'
         ]);
 
@@ -130,7 +130,7 @@ class MenuController extends BaseController
             'unit' => 'required|alpha',
             'price' => 'required|numeric',
             'menu_type' => 'required|in:side_dish,drink,main',
-            'ingredient_id' => 'required|exists:ingredients,id|unique:menus,ingredient_id,' . $menu->id,
+            'ingredient_id' => 'required|exists:ingredients,id|unique:menus,ingredient_id,' . $menu->id . ',id,deleted_at,NULL',
             'serving_size' => 'required|numeric'
         ]);
 

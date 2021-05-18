@@ -132,8 +132,12 @@ class IngredientController extends BaseController
         if (is_null($ingredient))
             return $this->sendError('Ingredient not found');
 
-        $ingredient->delete();
+        if ($ingredient->menu) {
+            return $this->sendError('Silahkan hapus terlebih dahulu menu yang memakai bahan ' . $ingredient->name . ' (' . $ingredient->menu->name . ')');
+        } else {
+            $ingredient->delete();
+            return $this->sendResponse(null, 'Ingredient deleted successfully.');
+        }
 
-        return $this->sendResponse(null, 'Ingredient deleted successfully.');
     }
 }
