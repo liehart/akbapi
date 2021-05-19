@@ -121,7 +121,7 @@ class OutgoingStockController extends BaseController
     {
         $ingredient = OutgoingStock::find($id);
 
-        if (is_null($menu))
+        if (is_null($ingredient))
             return $this->sendError('Menu not found');
 
         $store_data = $request->all();
