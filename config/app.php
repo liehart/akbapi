@@ -176,6 +176,8 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        Torann\Hashids\HashidsServiceProvider::class,
+        Barryvdh\DomPDF\ServiceProvider::class,
     ],
 
     /*
@@ -230,7 +232,8 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
 
         'Image' => Intervention\Image\Facades\Image::class,
-
+        'Hashids' => Torann\Hashids\Facade\Hashids::class,
+        'PDF' => Barryvdh\DomPDF\Facade::class,
     ],
 
 ];

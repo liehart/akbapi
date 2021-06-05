@@ -15,19 +15,19 @@ class CreateTransactionsTable extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('transaction_sn');
+            $table->string('transaction_sn')->nullable();
             $table->integer('subtotal');
             $table->integer('tax');
             $table->integer('service');
             $table->integer('grand_total');
             $table->enum('payment_method', ['cash', 'debit', 'credit']);
-            $table->string('edc_verification');
+            $table->string('edc_verification')->nullable();
             $table->bigInteger('order_id')->unsigned();
             $table->foreign('order_id')
                 ->references('id')
                 ->on('orders')
                 ->onDelete('CASCADE');
-            $table->bigInteger('transaction_card_id')->unsigned();
+            $table->bigInteger('transaction_card_id')->nullable()->unsigned();
             $table->foreign('transaction_card_id')
                 ->references('id')
                 ->on('transaction_cards')

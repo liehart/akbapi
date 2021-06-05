@@ -19,9 +19,10 @@ class BaseController extends Controller
      * @param int $resp_code
      * @return JsonResponse
      */
-    public function sendResponse($result, $message, $resp_code = 200) {
+    public function sendResponse($result, $message, int $resp_code = 200, bool $success = true): JsonResponse
+    {
         $response = [
-            'success' => true,
+            'success' => $success,
             'message' => $message,
             'data' => $result,
         ];
@@ -36,7 +37,8 @@ class BaseController extends Controller
      * @param int $errorCode
      * @return JsonResponse
      */
-    public function sendError($error, $errorMessage = [], $errorCode = 404) {
+    public function sendError($error, $errorMessage = [], int $errorCode = 404): JsonResponse
+    {
         $response = [
             'success' => true,
             'message' => $error,

@@ -8,13 +8,16 @@
     ],
     "license": "MIT",
     "require": {
-        "php": "^7.3|^8.0",
+        "php": "8.0",
         "ext-fileinfo": "*",
         "ext-gd": "*",
+        "ext-json": "*",
         "algolia/scout-extended": "^1.18",
+        "barryvdh/laravel-dompdf": "^0.9.0",
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
+        "hashids/hashids": "^4.1",
         "intervention/image": "^2.5",
         "laravel-validation-rules/credit-card": "^1.6",
         "laravel/framework": "^8.12",
@@ -23,7 +26,7 @@
         "league/flysystem-aws-s3-v3": "^1.0",
         "meilisearch/meilisearch-laravel-scout": "^0.12.5",
         "pusher/pusher-php-server": "^6.1",
-      "ext-json": "*"
+        "torann/hashids": "^3.0"
     },
     "require-dev": {
         "facade/ignition": "^2.5",

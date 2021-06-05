@@ -23,7 +23,7 @@ class CreateOutgoingStocksTable extends Migration
                 ->references('id')
                 ->on('ingredients')
                 ->onDelete('CASCADE');
-            $table->bigInteger('employee_id')->unsigned();
+            $table->bigInteger('employee_id')->nullable()->unsigned();
             $table->foreign('employee_id')
                 ->references('id')
                 ->on('employees')

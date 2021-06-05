@@ -17,6 +17,7 @@ class CreateOrdersTable extends Migration
             $table->bigIncrements('id');
             $table->integer('total_menu')->default(0);
             $table->integer('total_item')->default(0);
+            $table->string('token');
             $table->dateTime('order_date')->useCurrent();
             $table->dateTime('finish_at')->nullable();
             $table->bigInteger('reservation_id')->unsigned();

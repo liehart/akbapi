@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Models\Reservation;
+use App\Models\Order;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -56,6 +57,36 @@ class ReservationController extends BaseController
             return $this->sendResponse($reservation, 'Reservation retrieved successfully');
 
         return $this->sendResponse($reservation, 'Reservation empty');
+    }
+
+    public function select(Request $request): JsonResponse
+    {
+        $v = json_decode($request->query('v'));
+
+        $query = $v->query ?? '';
+        $session = $v->session ?? 'lunch';
+
+        $date = Carbon::today()->toDateString();
+
+        $orders = Order::get()->pluck('reservation_id');
+
+        $reservations = Reservation::with('customer')
+            ->whereHas(
+            'customer', function ($qq) use ($query) {
+                $qq->when($query, function ($q) use ($query) {
+                    $q->where('name', 'like', '%' . $query . '%');
+                });
+            })
+            ->when($session, function ($q) use ($session) {
+                $q->where('session', '=', $session);
+            })
+            ->where('date', '=', $date)
+            ->where('status', '=', 'new')
+            ->whereNotIn('id', $orders)
+            ->take(3)
+            ->get();
+                
+        return $this->sendResponse($reservations, 'Ingredients retrieved successfully');
     }
 
     public function search(Request $request): JsonResponse

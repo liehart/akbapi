@@ -10,7 +10,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class CustomerCreated implements ShouldBroadcast
+class NotifyWaiterReadyToServe implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -25,8 +25,8 @@ class CustomerCreated implements ShouldBroadcast
      */
     public function __construct($user, $token)
     {
-        $this->title = "Pesanan baru";
-        $this->message  = "{$user} selesai melakukan pemesanan";
+        $this->title = "Pesanan Siap";
+        $this->message  = "Pesanan {$user} sudah selesai di siapkan oleh chef";
         $this->token = $token;
     }
 

@@ -16,7 +16,6 @@ class CreateOrderDetailsTable extends Migration
         Schema::create('order_details', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('quantity');
-            $table->integer('price');
             $table->dateTime('ready_to_serve_at')->nullable();
             $table->dateTime('served_at')->nullable();
             $table->bigInteger('order_id')->unsigned();

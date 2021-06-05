@@ -6,16 +6,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class OrderDetail extends Model
+class Cart extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
     protected $fillable = [
-        'quantity',
-        'ready_to_serve_at',
-        'served_at',
         'order_id',
-        'menu_id'
+        'menu_id',
+        'quantity'
     ];
 
     public function order(): BelongsTo

@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\API;
 
 use App\Models\Ingredient;
+use App\Models\Menu;
+use DateTime;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class IngredientController extends BaseController
@@ -140,4 +143,89 @@ class IngredientController extends BaseController
         }
 
     }
+    function validateDate($date, $format = 'Y-m-d')
+    {
+        $d = DateTime::createFromFormat($format, $date);
+        // The Y ( 4 digits year ) returns TRUE for any integer with any number of digits so changing the comparison from == to === fixes the issue.
+        return $d && $d->format($format) === $date;
+    }
+
+    public function showStockCustsom($start, $end){
+        if(isset($start) && isset($end)) {
+            if ($this->validateDate($start) && $this->validateDate($end)) {
+                $stockMakanan = Ingredient::orWhereHas(
+                    'in', function ($qq) use ($start, $end) {
+                    $qq
+                        ->where('created_at', '>=', $start)
+                        ->where('created_at', '<=', $end);
+                })->orWhereHas(
+                    'out', function ($qq) use ($start, $end) {
+                    $qq
+                        ->where('created_at', '>=', $start)
+                        ->where('created_at', '<=', $end);
+                })->get();
+                if (count($stockMakanan) > 0 ) {
+                    return view('stock', compact('stockMakanan', 'start', 'end'));
+                }
+                else {
+                    return $this->sendError('Tidak ada data untuk tanggal tersebut', 'NO_DATA');
+                }
+            }
+        }
+        return $this->sendError('DATE_INVALID');
+
+    }
+
+    public function showStockMenu($menu, $month, $year){
+        if(isset($month) && isset($menu) && isset($year)) {
+            if($month > 0 && $month <= 12 && $year > 0 && $year < 10000) {
+                $menu = Menu::find($menu);
+                if (!is_null($menu)) {
+                    $query = "select datea as date,
+    (select unit from ingredients WHERE id = " . $menu->id . ") as unit,
+    CONVERT(COALESCE(sum(jumlah_masuk), 0), UNSIGNED) as jumlah_masuk,
+    CONVERT((
+        COALESCE(sum(jumlah_masuk), 0) - COALESCE(sum(jumlah_terjual), 0)
+    ), SIGNED) as jumlah_sisa,
+    CONVERT(COALESCE(sum(jumlah_keluar), 0), UNSIGNED) as jumlah_dibuang
+FROM (
+        SELECT DATE(date) as datea,
+            CONVERT(SUM(QUANTITY), UNSIGNED) as jumlah_masuk,
+            null as jumlah_keluar,
+            null as jumlah_terjual
+        FROM incoming_stocks
+        WHERE ingredient_id = " . $menu->id . " AND MONTH(date) = " . $month . " AND YEAR(date) = " . $year . "
+        GROUP BY datea
+        union
+        SELECT DATE(date) as datea,
+            null as jumlah_masuk,
+            CONVERT(
+                SUM(IF(category = 'waste', quantity, 0)),
+                UNSIGNED
+            ) as jumlah_keluar,
+            CONVERT(
+                SUM(IF(category = 'sold', quantity, 0)),
+                UNSIGNED
+            ) as jumlah_terjual
+        FROM outgoing_stocks
+        WHERE ingredient_id = " . $menu->id . " AND MONTH(date) = " . $month . " AND YEAR(date) = " . $year . "
+        GROUP BY datea
+    ) as a
+group by datea;";
+                    $stockMakanan = DB::select( DB::raw($query));
+                    if (count($stockMakanan) > 0 ) {
+                        return view('stockMenu', compact('stockMakanan', 'month', 'year', 'menu'));
+                    }
+                    else {
+                        return $this->sendError('Tidak ada data untuk pilihan tersebut', 'NO_DATA');
+                    }
+                }
+                return $this->sendError('MENU_NOT_FOUND');
+            }
+        }
+        return $this->sendError('DATE_INVALID');
+
+    }
+
+
 }
