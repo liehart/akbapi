@@ -24,8 +24,8 @@ class OutgoingStockController extends BaseController
     {
         $v = json_decode($request->query('v'));
         $query = $v->query ?? '';
-        $sort = $v->sort ?? 'id';
-        $asc = $v->asc ?? 'true';
+        $sort = $v->sort ?? 'date';
+        $asc = $v->asc ?? 'false';
         $show = $v->show ?? 10;
         $page = $v->page ?? 1;
         $filter = $v->filter ?? [];
@@ -127,8 +127,7 @@ class OutgoingStockController extends BaseController
         $store_data = $request->all();
         $validator = Validator::make($store_data, [
             'quantity' => 'required|numeric',
-            'ingredient_id' => 'required|exists:ingredients,id',
-            'price' => 'required|numeric'
+            'ingredient_id' => 'required|exists:ingredients,id'
         ]);
 
         if ($validator->fails()) {
@@ -138,7 +137,6 @@ class OutgoingStockController extends BaseController
         $tampung = $ingredient->quantity;
         $ingredient->quantity = $store_data['quantity'];
         $ingredient->ingredient_id = $store_data['ingredient_id'];
-        $ingredient->price = $store_data['price'];
         $ingredient->ingredient->remaining_stock += $store_data['quantity'] - $tampung;
         if ($ingredient->ingredient->remaining_stock <= 0) {
             if ($ingredient->ingredient->menu) {

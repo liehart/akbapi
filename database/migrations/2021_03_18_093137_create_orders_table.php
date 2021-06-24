@@ -21,6 +21,7 @@ class CreateOrdersTable extends Migration
             $table->dateTime('order_date')->useCurrent();
             $table->dateTime('finish_at')->nullable();
             $table->bigInteger('reservation_id')->unsigned();
+            $table->boolean('is_paid')->default(false);
             $table->foreign('reservation_id')
                 ->references('id')
                 ->on('reservations')

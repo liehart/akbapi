@@ -1,4 +1,3 @@
-<!-- CSS Code: Place this code in the document's head (between the 'head' tags) -->
 <body onload="window.print()">
 
 <div style="max-width: 900px">

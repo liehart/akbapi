@@ -24,10 +24,11 @@ class OrderController extends BaseController
     {
         $v = json_decode($request->query('v'));
         $query = $v->query ?? '';
-        $sort = $v->sort ?? '';
+        $sort = $v->sort ?? 'order_date';
         $asc = $v->asc ?? 'true';
         $show = $v->show ?? 10;
         $page = $v->page ?? 1;
+        $filter = $v->filter ?? [];
 
         $orders = Order::join('reservations', 'reservation_id', '=', 'reservations.id')
             ->join('customers', 'customer_id', '=', 'customers.id')
@@ -43,6 +44,13 @@ class OrderController extends BaseController
                     'orders.*',
                     'employees.name as w_name'
                 ])
+            ->where(function($q) use ($filter){
+                foreach($filter as $item){
+                    $q->when($item->value != [] || $item->value, function ($qq) use ($item) {
+                        $qq->whereIn($item->name, $item->value ?? ['*']);
+                    });
+                }
+            })
             ->when($sort, function ($q) use ($sort, $asc) {
                 $q->orderBy($sort, $asc == 'true' ? 'asc' : 'desc');
             })

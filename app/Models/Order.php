@@ -17,7 +17,8 @@ class Order extends Model
         'reservation_id',
         'finish_at',
         'waiter_id',
-        'token'
+        'token',
+        'is_paid'
     ];
 
     protected $hidden = [
